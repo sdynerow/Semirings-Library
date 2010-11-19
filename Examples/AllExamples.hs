@@ -17,6 +17,7 @@ import Examples.WidestPath
 import Examples.ShortestPath
 import Examples.ShortestPathNeg
 import Examples.MostReliablePath
+import Examples.BoundedShortestPath
 
 import Algebra.Semiring
 import Algebra.Products

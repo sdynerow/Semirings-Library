@@ -11,21 +11,23 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Examples.LexProd
-import Examples.UsablePath
-import Examples.WidestPath
-import Examples.ShortestPath
-import Examples.ShortestPathNeg
-import Examples.MostReliablePath
-import Examples.BoundedShortestPath
+-- A definition of the AS-PATH policy of BGP
 
-import Algebra.Matrix
+module Policy.Paths
+( Paths(..)
+) where
+
 import Algebra.Semiring
 
-import Algebra.Product.Direct
-import Algebra.Product.Lexico
-import Algebra.Product.Scoped
+data Paths = AS [Int] | Full
+       deriving(Eq, Show)
 
-import Algebra.Optimum
-
-import LaTeX
+instance Semiring (Paths) where
+  add (AS as) (AS bs) = if (asl <= bsl)
+      	      	      	then (AS as)
+			else (AS bs)
+    where asl = length as
+    	  bsl = length bs
+  addId = 
+  mul a b = b
+  mulId = Neutral

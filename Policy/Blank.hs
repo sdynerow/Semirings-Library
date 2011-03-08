@@ -11,21 +11,19 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Examples.LexProd
-import Examples.UsablePath
-import Examples.WidestPath
-import Examples.ShortestPath
-import Examples.ShortestPathNeg
-import Examples.MostReliablePath
-import Examples.BoundedShortestPath
+-- A template for policy definition
 
-import Algebra.Matrix
+module Policy.Blank
+( Blank(..)
+) where
+
 import Algebra.Semiring
 
-import Algebra.Product.Direct
-import Algebra.Product.Lexico
-import Algebra.Product.Scoped
+data Blank = B Int | Neutral
+       deriving(Eq, Show)
 
-import Algebra.Optimum
-
-import LaTeX
+instance Semiring (Blank) where
+  add a b = a
+  addId = Neutral
+  mul a b = b
+  mulId = Neutral

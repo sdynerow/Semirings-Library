@@ -17,12 +17,16 @@ module LaTeX
 , matrixToLTX
 ) where
 
+import Data.Array
+
 import Algebra.Matrix
 
 data LTX s = L s | LM [[s]]
 
-matrixToLTX :: Matrix s -> LTX s
-matrixToLTX (M ms) = LM ms
+matrixToLTX :: (LaTeX s) => Matrix s -> LTX s
+matrixToLTX (M ms) = LM converted
+  where converted = [[ms!(i,j) | j <- [1..n]] | i <- [1..n]]
+  	n = order (M ms)
 
 class LaTeX s where
   toLaTeX :: s -> String

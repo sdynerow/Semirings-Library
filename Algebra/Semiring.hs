@@ -13,6 +13,8 @@
 
 module Algebra.Semiring
 ( Semiring(..)
+, powers
+, closures
 ) where
 
 import Utils
@@ -24,7 +26,7 @@ class (Eq s) => Semiring s where
   mul :: s -> s -> s
   mulId :: s
 
-  kronecker :: Int -> Int -> s
+  kronecker :: (Eq t) => t -> t -> s
   kronecker i j | (i==j) = mulId
                 | (i/=j) = addId
   

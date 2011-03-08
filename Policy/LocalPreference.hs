@@ -11,21 +11,26 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Examples.LexProd
-import Examples.UsablePath
-import Examples.WidestPath
-import Examples.ShortestPath
-import Examples.ShortestPathNeg
-import Examples.MostReliablePath
-import Examples.BoundedShortestPath
+-- Definition of the LOCAL-PREF policy of BGP
 
-import Algebra.Matrix
-import Algebra.Semiring
-
-import Algebra.Product.Direct
-import Algebra.Product.Lexico
-import Algebra.Product.Scoped
-
-import Algebra.Optimum
+module Policy.LocalPreference
+( LocalPreference(..)
+) where
 
 import LaTeX
+
+import Algebra.Semiring
+
+data LocalPreference = LP Int | Infinity | NA
+       deriving(Eq, Show)
+
+instance Semiring (LocalPreference) where
+  add (LP a) (LP b) = LP (min a b)
+  addId = Infinity
+  mul a _ = a
+  mulId = NA
+
+instance LaTeX (LocalPreference) where
+  toLaTeX (LP x) = show x
+  toLaTeX Infinity = "\\infty"
+  toLaTeX NA = "NA"

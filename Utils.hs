@@ -13,14 +13,25 @@
 
 module Utils
 ( log2
+, toArray
+, arrayOrder
 , squareMultiply
 ) where
 
 import Data.Bits
+import Data.Array
 
 log2 :: Int -> Int
 log2 1 = 0
 log2 n = 1 + log2 (n `div` 2)
+
+toArray :: Int -> [s] -> Array (Int,Int) s
+toArray n ms | ((n*n) == (length ms)) =
+  array bnds (zip (range bnds) ms)
+  where bnds = ((1,1),(n,n))
+
+arrayOrder :: Array (Int,Int) s -> Int
+arrayOrder as = fst (snd (bounds as))
 
 squareMultiply :: (a -> a -> a) -> a -> a -> Int -> a
 squareMultiply  _  mulId _ 0 = mulId

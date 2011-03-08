@@ -11,21 +11,22 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Examples.LexProd
-import Examples.UsablePath
-import Examples.WidestPath
-import Examples.ShortestPath
-import Examples.ShortestPathNeg
-import Examples.MostReliablePath
-import Examples.BoundedShortestPath
+module Policy.SharedAttribute
+( SharedAttr(..)
+) where
 
-import Algebra.Matrix
+import Data.Set
+
 import Algebra.Semiring
 
-import Algebra.Product.Direct
-import Algebra.Product.Lexico
-import Algebra.Product.Scoped
+data Attribute = A | B | C | D
+  deriving (Ord, Eq, Show)
 
-import Algebra.Optimum
+data SharedAttr = SA (Set Attribute)
+  deriving(Eq, Show)
 
-import LaTeX
+instance Semiring (SharedAttr) where
+  add (SA a) (SA b) = SA (union a b)
+  addId = SA empty
+  mul (SA a) (SA b) = SA (intersection a b)
+  mulId = SA (fromList [A,B,C,D])

@@ -15,9 +15,9 @@ module Policy.ShortestPath
 ( ShortestPath(..)
 ) where
 
-import Algebra.Semiring
-
 import LaTeX
+
+import Algebra.Semiring
 
 data ShortestPath = SP Int | Inft
   deriving (Eq)

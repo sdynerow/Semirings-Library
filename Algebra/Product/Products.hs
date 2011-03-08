@@ -66,3 +66,8 @@ direct as bs
 
 zipD :: s -> t -> Direct s t
 zipD s t = Dir (s, t)
+
+
+
+
+

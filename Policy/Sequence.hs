@@ -11,21 +11,31 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Examples.LexProd
-import Examples.UsablePath
-import Examples.WidestPath
-import Examples.ShortestPath
-import Examples.ShortestPathNeg
-import Examples.MostReliablePath
-import Examples.BoundedShortestPath
+module Policy.Sequence
+( Sequence(..)
+) where
 
-import Algebra.Matrix
 import Algebra.Semiring
 
-import Algebra.Product.Direct
-import Algebra.Product.Lexico
-import Algebra.Product.Scoped
+threshold = 10
 
-import Algebra.Optimum
+data Sequence = S [Int] | Full
+  deriving(Eq, Show)
 
-import LaTeX
+instance Semiring (Sequence) where
+  add (S x) (S y) = if (lx < ly)
+      	       	    then (S x)
+		    else (S y)
+    where lx = length x
+    	  ly = length y
+  add (S x) Full = (S x)
+  add Full (S x) = (S x)
+  add Full Full = Full
+  addId = Full
+  mul (S x) (S y) = if (lres < threshold)
+      	       	    then (S res)
+		    else Full
+    where lres = length res
+    	  res = x ++ y
+  mul   _     _   = Full
+  mulId = S []

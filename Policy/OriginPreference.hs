@@ -11,21 +11,19 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Examples.LexProd
-import Examples.UsablePath
-import Examples.WidestPath
-import Examples.ShortestPath
-import Examples.ShortestPathNeg
-import Examples.MostReliablePath
-import Examples.BoundedShortestPath
+-- Definition of an ORIGIN-PREF policy
 
-import Algebra.Matrix
+module Policy.OriginPreference
+( OriginPreference(..)
+) where
+
 import Algebra.Semiring
 
-import Algebra.Product.Direct
-import Algebra.Product.Lexico
-import Algebra.Product.Scoped
+data OriginPreference = OP Int | Infinity | NA
+       deriving(Eq, Show)
 
-import Algebra.Optimum
-
-import LaTeX
+instance Semiring (OriginPreference) where
+  add (OP a) (OP b) = OP (min a b)
+  addId = Infinity
+  mul _ b = b
+  mulId = NA

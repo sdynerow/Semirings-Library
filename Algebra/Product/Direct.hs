@@ -11,45 +11,21 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Algebra.Products
-( Lexico(..)
-, lexico
-, Direct(..)
+module Algebra.Product.Direct
+( Direct(..)
 , direct
 ) where
+
+import LaTeX
 
 import Algebra.Matrix
 import Algebra.Semiring
 
-data Lexico s t = Lex (s,t)
-  deriving (Eq)
-
 data Direct s t = Dir (s,t)
   deriving (Eq)
 
-instance (Show s, Show t) => Show (Lexico s t) where
-  show (Lex l) = show l
-
 instance (Show s, Show t) => Show (Direct s t) where
   show (Dir d) = show d
-
-instance (Semiring s, Semiring t) => Semiring (Lexico s t) where
-  addId = Lex (addId, addId)
-  mulId = Lex (mulId, mulId)
-  add (Lex (s1,t1)) (Lex (s2,t2))
-      | (addS == s1 && addS == s2) = Lex (addS,add t1 t2)
-      | (addS == s1) = Lex (s1,t1)
-      | (addS == s2) = Lex (s2,t2)
-      | otherwise    = Lex (addS, addId)
-          where addS = add s1 s2
-  mul (Lex (s1, t1)) (Lex (s2, t2)) = Lex (mul s1 s2, mul t1 t2)
-
-lexico :: (Semiring s, Semiring t) => Matrix s -> Matrix t -> Matrix (Lexico s t)
-lexico as bs | (order as) == (order bs) = pointwise as bs zipL
-             | otherwise = error "Incompatibles matrice sizes"
-
-zipL :: s -> t -> Lexico s t
-zipL s t = Lex (s, t)
 
 instance (Semiring s, Semiring t) => Semiring (Direct s t) where
   addId = Dir (addId, addId)
@@ -66,3 +42,7 @@ direct as bs
 
 zipD :: s -> t -> Direct s t
 zipD s t = Dir (s, t)
+
+-- Because I want to put nice matrices from the SP policy in LaTeX files :)
+instance (LaTeX s, LaTeX t) => LaTeX (Direct s t) where
+  toLaTeX (Dir (s, t)) = "(" ++ toLaTeX s ++ "," ++ toLaTeX t ++ ")"

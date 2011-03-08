@@ -12,67 +12,98 @@
 -- imitations under the License.
 
 module Algebra.Matrix
-( Matrix(M)
-, genMatrixAddId
-, genMatrixMulId
+( Matrix(..)
+, matrixAddId
+, matrixMulId
 , order
+, transpose
+, pointwise
 ) where
 
-import Data.List
-import Data.Bits
-
 import Utils
+import Data.Array
+
 import Algebra.Semiring
 
-data Matrix s = M [[s]]
-              | MatAddId
+data Matrix s = M (Array (Int,Int) s)
+     	      | MatAddId
 	      | MatMulId
 
-instance (Show s, Eq s) => Show (Matrix s) where
-  show (M (a:as)) | as == []  = showVector a
-                  | otherwise = showVector a ++ "\n" ++ show (M as)
-    where showVector (a:[]) = show a
-          showVector (a:as) = show a ++ " " ++ showVector as
+matrixAddId :: (Semiring s) => Int -> Matrix s
+matrixAddId n = M (array r [(idx, addId) | idx <- range r])
+  where r = ((1,1),(n,n))
+
+matrixMulId :: (Semiring s) => Int -> Matrix s
+matrixMulId n = M (array r [(idx, delta idx) | idx <- range r])
+  where r = ((1,1),(n,n))
+        delta = \(i,j) -> kronecker i j
+
+order :: Matrix s -> Int
+order (M as) = arrayOrder as
+order _ = 0
+
+transpose :: Matrix s -> Matrix s
+transpose (M ms) = M (array r [((j,i), ms!(i,j)) | i <- [1..n], j <- [1..n]])
+  where r = ((1,1),(n,n))
+  	n = arrayOrder ms
+transpose x = x
+
+pointwise :: Matrix s -> Matrix t -> (s -> t -> u) -> Matrix u
+pointwise (M as) (M bs) op | (arrayOrder as) == (arrayOrder bs) =
+  M (array r [(idx, op (as!idx) (bs!idx)) | idx <- range r])
+    where r = bounds as
+pointwise _ _ _ = error "Incompatible matrices"
+
+instance (Semiring s, Show s) => Show (Matrix s) where
+  show (M as) = intShow [[ as!(i,j) | j <- [1..n]] | i <- [1..n]]
+    where n = arrayOrder as
+          intShow (a:as) |  as == [] = intShowVector a
+	  	  	 | otherwise = intShowVector a ++ "\n" ++ intShow as
+	    where intShowVector (a:[]) = show a
+	          intShowVector (a:as) = show a ++ " " ++ intShowVector as
   show MatAddId = "forall i,j => 0"
   show MatMulId = "i==j => 1 & i/=j => 0"
 
 instance (Semiring s, Eq s) => Eq (Matrix s) where
   (==) MatAddId MatAddId = True
   (==) MatMulId MatMulId = True
-  (==) (M as) MatAddId = (==) (M as) (genMatrixAddId (order as))
-  (==) MatAddId (M bs) = (==) (genMatrixAddId (order bs)) (M bs)
-  (==) (M as) MatMulId = (==) (M as) (genMatrixMulId (order as))
-  (==) MatMulId (M bs) = (==) (genMatrixMulId (order bs)) (M bs)
+  (==) (M as) MatAddId = (==) (M as) (matrixAddId (order (M as)))
+  (==) MatAddId (M bs) = (==) (matrixAddId (order (M bs))) (M bs)
+  (==) (M as) MatMulId = (==) (M as) (matrixMulId (order (M as)))
+  (==) MatMulId (M bs) = (==) (matrixMulId (order (M bs))) (M bs)
   (==) (M as) (M bs) = as == bs
 
-genMatrixAddId :: (Semiring s) => Int -> Matrix s
-genMatrixAddId n = M (replicate n (replicate n addId))
-
-genMatrixMulId :: (Semiring s) => Int -> Matrix s
-genMatrixMulId n = M [[kronecker i j | j <- [1..n]] | i <- [1..n]]
-
-order :: [[s]] -> Int
-order as = intOrder as (length as)
-  where intOrder [] n = n
-        intOrder (x:xs) n | (n == length x) = intOrder xs n
-                          | otherwise       = error "xs is not a square matrix"
-
 instance Semiring s => Semiring (Matrix s) where
-  add (M as) (M bs) = M (zipWith (zipWith add) as bs)
-  add MatAddId (M bs) = add (genMatrixAddId (order bs)) (M bs)
-  add (M as) MatAddId = add (M as) (genMatrixAddId (order as))
-  add MatMulId (M bs) = add (genMatrixMulId (order bs)) (M bs)
-  add (M as) MatMulId = add (M as) (genMatrixMulId (order as))
-  add _ _ = error "Incompatibles matrices"
+
+  add MatAddId (M bs) = add (matrixAddId (arrayOrder bs)) (M bs)
+  add (M as) MatAddId = add (M as) (matrixAddId (arrayOrder as))
+  add MatMulId (M bs) = add (matrixMulId (arrayOrder bs)) (M bs)
+  add (M as) MatMulId = add (M as) (matrixMulId (arrayOrder as))
+
+  add as bs = pointwise as bs add
+
   addId = MatAddId
 
-  mul (M as) (M bs) =
-      M [[foldl add addId (zipWith mul a b) | b <- transpose bs] | a <- as]
-  mul MatAddId (M bs) = mul (genMatrixAddId (order bs)) (M bs)
-  mul (M as) MatAddId = mul (M as) (genMatrixAddId (order as))
-  mul MatMulId (M bs) = mul (genMatrixMulId (order bs)) (M bs)
-  mul (M as) MatMulId = mul (M as) (genMatrixMulId (order as))
-  mul _ _ = error "Incompatibles matrices"
+  mul MatAddId (M bs) = mul (matrixAddId (arrayOrder bs)) (M bs)
+  mul (M as) MatAddId = mul (M as) (matrixAddId (arrayOrder as))
+  mul MatMulId (M bs) = mul (matrixMulId (arrayOrder bs)) (M bs)
+  mul (M as) MatMulId = mul (M as) (matrixMulId (arrayOrder as))
+
+  mul (M as) (M bs) | ((arrayOrder as) /= (arrayOrder bs)) =
+    error "Incompatible matrices"
+  mul (M as) (M bs) | ((arrayOrder as) == (arrayOrder bs)) =
+    M (array r [((i,j), computeOneElt (M as) (M bs) (i,j)) | (i,j) <- range r])
+    where r = bounds as
+    	  n = arrayOrder as
+
   mulId = MatMulId
 
-  power (M as) k = squareMultiply mul (genMatrixMulId (order as)) (M as) k
+  power as k = squareMultiply mul (matrixMulId (order as)) as k
+
+computeOneElt :: (Semiring s) => Matrix s -> Matrix s -> (Int,Int) -> s
+computeOneElt (M as) (M bs) (i,j) | ((arrayOrder as) == (arrayOrder bs)) =
+  foldl add addId [mul (as!(i,q)) (bs!(q,j)) | q <- [1..n]]
+  where n = arrayOrder as
+
+
+

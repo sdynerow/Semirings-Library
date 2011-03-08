@@ -11,11 +11,9 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Algebra.Products
+module Algebra.Product.Lexico
 ( Lexico(..)
 , lexico
-, Direct(..)
-, direct
 ) where
 
 import Algebra.Matrix
@@ -24,14 +22,8 @@ import Algebra.Semiring
 data Lexico s t = Lex (s,t)
   deriving (Eq)
 
-data Direct s t = Dir (s,t)
-  deriving (Eq)
-
 instance (Show s, Show t) => Show (Lexico s t) where
   show (Lex l) = show l
-
-instance (Show s, Show t) => Show (Direct s t) where
-  show (Dir d) = show d
 
 instance (Semiring s, Semiring t) => Semiring (Lexico s t) where
   addId = Lex (addId, addId)
@@ -50,19 +42,3 @@ lexico as bs | (order as) == (order bs) = pointwise as bs zipL
 
 zipL :: s -> t -> Lexico s t
 zipL s t = Lex (s, t)
-
-instance (Semiring s, Semiring t) => Semiring (Direct s t) where
-  addId = Dir (addId, addId)
-  mulId = Dir (mulId, mulId)
-  add (Dir (s1, t1)) (Dir (s2, t2)) = Dir (add s1 s2, add t1 t2)
-  mul (Dir (s1, t1)) (Dir (s2, t2)) = Dir (mul s1 s2, mul t1 t2)
-
-direct :: (Semiring s, Semiring t) => Matrix s -> Matrix t -> Matrix (Direct s t)
-direct as bs
-   | (order as) == (order bs)
-     = pointwise as bs zipD
-   | otherwise
-     = error "Incompatibles matrice sizes"
-
-zipD :: s -> t -> Direct s t
-zipD s t = Dir (s, t)

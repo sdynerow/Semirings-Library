@@ -18,10 +18,11 @@ import Policy.ShortestPathNeg
 import Policy.MostReliablePath
 
 import Algebra.Semiring
-import Algebra.Products
-
 import Algebra.Matrix
-import Algebra.Triangular
+
+import Algebra.Product.Direct
+import Algebra.Product.Lexico
+import Algebra.Product.Scoped
 
 import Algebra.Optimum
 

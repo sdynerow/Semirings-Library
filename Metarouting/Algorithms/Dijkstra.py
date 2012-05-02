@@ -15,7 +15,7 @@
 # imitations under the License.
 
 from Metarouting.Algebra.Semiring import *
-from Metarouting.Algebra.Matrix import *
+from Metarouting.Algebra.RoutingMatrix import *
 from Metarouting.Utils.Utilities import *
 
 def neighbors(G, T, i):
@@ -25,17 +25,72 @@ def neighbors(G, T, i):
             neigh.append(j)
     return neigh
 
-def dijkstra(G, s):
+def predecessors(G, T, i):
+    pred = list()
+    for j in T:
+        if (not G(j,i).isZero()):
+            pred.append(j)
+    return pred
+    
+def dijkstraR(G, s):
+    # Solving R = R*A + I
+    # Computing the s-th row vector of R*
     n = G.order()
-    pi = Matrix.unit(G.type, n, row = s)
+    pi = RoutingMatrix.unit(G.type, n, row = s)
     nh = n * [0]
-    T = range(1,n+1)
+    T = range(n)
     while(len(T) > 0):
-        (i, select) = argmax(G.type, T, pi)
-        T.remove(i)
-        for j in neighbors(G, T, i):
-            alt = G(j,i) * pi[i]
-            if (alt < pi[j]):
-                pi[j] = alt
-                nh[j-1] = i
+        q = argmax(G.type, T, pi)
+        if(q == -1):
+            break
+        T.remove(q)
+        for d in neighbors(G, T, q):
+            alt = pi[q] * G(q,d)
+            if (pi[d] < alt):
+                pi[d] = alt
+                nh[d] = q
+    return (pi, nh)
+
+def dijkstraL(G, d):
+    # Solving L = A*L + I
+    # Computing the d-th column vector of L*
+    n = G.order()
+    pi = RoutingMatrix.unit(G.type, n, row = d)
+    ph = n * [0]
+    T = range(n)
+    while(len(T) > 0):
+        q = argmax(G.type, T, pi)
+        if(q == -1):
+            break
+        T.remove(q)
+        for s in predecessors(G, T, q):
+            alt = G(s,q) * pi[q]
+            if (pi[s] < alt):
+                pi[s] = alt
+                ph[s] = q
+    return (pi, ph)
+
+dijkstra = dijkstraR
+
+def dijkstraND(G, s):
+    # Solving R = R*A + I
+    n = G.order()
+    pi = RoutingMatrix.unit(G.type, n, row = s)
+    nRange = range(n)
+    nh = list()
+    for i in nRange:
+        nh.append(list())
+    nh[s].append(s)
+    T = nRange
+    while(len(T) > 0):
+        q = argmax(G.type, T, pi)
+        if(q == -1):
+            break
+        T.remove(q)
+        for d in neighbors(G, T, q):
+            alt = pi[q] * G(q,d)
+            if (pi[d] < alt):
+                pi[d] = alt
+                nh[d] = list(nh[q])
+                nh[d].append(d)
     return (pi, nh)

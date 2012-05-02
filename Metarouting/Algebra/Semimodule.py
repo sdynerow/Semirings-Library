@@ -14,9 +14,10 @@
 # See the License for the specific language governing permissions and
 # imitations under the License.
 
-class Semiring:
+from Metarouting.Algebra.Semiring import *
+
+class Semimodule:
     zeroElt = None
-    unitElt = None
 
     def __init__(self, val):
         self.elt = val
@@ -25,50 +26,21 @@ class Semiring:
         raise NotImplementedError("Additive law not implemented.")
 
     def __mul__(self, other):
-        raise NotImplementedError("Multiplicative law not implemented.")
+        if(issubclass(other.__class__, Semiring)):
+            return self.__lmul__(other)
+        else:
+            return NotImplemented
 
-    def __le__(self, other): # <=
-        raise NotImplementedError("Canonical preorder relation not specified.")        
+    def __lmul__(self, other):
+        raise NotImplementedError("Scalar left-multiplicative law not implemented.")
 
-    def __lt__(self, other): # <
-        return (self <= other and self != other)
-
-    def __ge__(self, other):
-        return (other <= self)
-
-    def __gt__(self, other):
-        return (other < self)
-
-    def __eq__(self, other):
-        return (self.elt == other.elt)
-
-    def __ne__(self, other):
-        return (not self.elt == other.elt)
+    def __rmul__(self, other):
+        raise NotImplementedError("Scalar right-multiplicative law not implemented.")
 
     # Representation related stuff
     def __repr__(self):
         raise NotImplementedError("Representation not specified.")
 
-    # Power operator (not square-and-multiply)
-    def __pow__(self, p):
-        rPow = p
-        res = self.unit()
-        while(rPow > 0):
-            res = res * self
-            rPow -= 1
-        return res
-
-    def isZero(self):
-        return self.elt == self.zero
-
-    def isUnit(self):
-        return self.elt == self.unit
-
     @classmethod
     def zero(cls):
         return cls(cls.zeroElt)
-
-    @classmethod
-    def unit(cls):
-        return cls(cls.unitElt)
-

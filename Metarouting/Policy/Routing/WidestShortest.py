@@ -14,26 +14,23 @@
 # See the License for the specific language governing permissions and
 # imitations under the License.
 
-from Metarouting.Algebra.Matrix import *
+from Metarouting.Algebra.Semiring import *
+from Metarouting.Algebra.Products import *
 
-def nhStr(nh):
-    result = "["
-    n = len(nh)
-    for i in range(n):
-        if(nh[i] != 0):
-            result += str(nh[i])
-        else:
-            result += '-'
-        if(i < n-1):
-            result += " "
-    result += "]"
-    return result
+from Metarouting.Policy.Routing.ShortestR import *
+from Metarouting.Policy.Routing.Bottleneck import *
 
-def argmax(eltype, S, ls):
-    mIdx = -1
-    mFnd = eltype.zero()
-    for i in S:
-        if (mFnd < ls[i]):
-            mFnd = ls[i]
-            mIdx = i
-    return mIdx
+class WidestShortest(LeftLexicographic):
+    zeroElt = (Bottleneck.zeroElt, ShortestR.zeroElt)
+    unitElt = (Bottleneck.unitElt, ShortestR.unitElt)
+
+    def __init__(self, val):
+        (s,t) = val
+        if(s.__class__ != Bottleneck):
+            s = Bottleneck(s)
+        if(t.__class__ != ShortestR):
+            t = ShortestR(t)
+        self.elt = (s,t)
+
+    def __repr__(self):
+        return self.elt.__repr__()

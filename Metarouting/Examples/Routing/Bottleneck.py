@@ -14,26 +14,24 @@
 # See the License for the specific language governing permissions and
 # imitations under the License.
 
-from Metarouting.Algebra.Matrix import *
+from Metarouting.Algebra.RoutingMatrix import *
 
-def nhStr(nh):
-    result = "["
-    n = len(nh)
-    for i in range(n):
-        if(nh[i] != 0):
-            result += str(nh[i])
-        else:
-            result += '-'
-        if(i < n-1):
-            result += " "
-    result += "]"
-    return result
+from Metarouting.Policy.Routing.Bottleneck import *
 
-def argmax(eltype, S, ls):
-    mIdx = -1
-    mFnd = eltype.zero()
-    for i in S:
-        if (mFnd < ls[i]):
-            mFnd = ls[i]
-            mIdx = i
-    return mIdx
+from Metarouting.Algorithms.Dijkstra import *
+from Metarouting.Algorithms.APSP import *
+
+m = RoutingMatrix(4, 4, [ 0, 1, 2, 3
+                        , 1, 0, 2, 3
+                        , 2, 2, 0, 1
+                        , 3, 3, 1, 0], cast=Bottleneck)
+
+print "Input matrix:\n" + str(m) + "\n"
+
+llo = m.leftLocalOptimum()
+rlo = m.rightLocalOptimum()
+
+print "LLO:\n" + str(llo) + "\n"
+print "RLO:\n" + str(rlo) + "\n"
+
+solveAPSP(dijkstraR, "DijkstraR", m)

@@ -14,26 +14,12 @@
 # See the License for the specific language governing permissions and
 # imitations under the License.
 
-from Metarouting.Algebra.Matrix import *
+from Metarouting.Utils.Utilities import nhStr
 
-def nhStr(nh):
-    result = "["
-    n = len(nh)
-    for i in range(n):
-        if(nh[i] != 0):
-            result += str(nh[i])
-        else:
-            result += '-'
-        if(i < n-1):
-            result += " "
-    result += "]"
-    return result
-
-def argmax(eltype, S, ls):
-    mIdx = -1
-    mFnd = eltype.zero()
-    for i in S:
-        if (mFnd < ls[i]):
-            mFnd = ls[i]
-            mIdx = i
-    return mIdx
+def solveAPSP(algo, algoName, matrix):
+    i = 0
+    n = matrix.order()
+    while(i < n):
+        (pi, nh) = algo(matrix, i)
+        print algoName + " [s=" + str(i) + "]: pi: " + str(pi) + " nh: " + nhStr(nh)
+        i += 1

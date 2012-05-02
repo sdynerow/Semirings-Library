@@ -1,1 +1,1 @@
-__all__ = ["Semiring", "Matrix", "Products", "Properties"]
+__all__ = [ "Semiring", "RoutingMatrix", "MappingMatrix", "Products" ]

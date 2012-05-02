@@ -14,26 +14,23 @@
 # See the License for the specific language governing permissions and
 # imitations under the License.
 
-from Metarouting.Algebra.Matrix import *
+from Metarouting.Algebra.Semiring import *
 
-def nhStr(nh):
-    result = "["
-    n = len(nh)
-    for i in range(n):
-        if(nh[i] != 0):
-            result += str(nh[i])
+class Bottleneck(Semiring):
+    zeroElt = 0
+    unitElt = 1 << 16
+
+    def __add__(self, other):
+        return Bottleneck(max(self.elt,other.elt));
+
+    def __mul__(self, other):
+        return Bottleneck(min(self.elt,other.elt));
+
+    def __le__(self, other):
+        return (self.elt <= other.elt)
+
+    def __repr__(self):
+        if(self.elt == Bottleneck.unitElt):
+            return "I"
         else:
-            result += '-'
-        if(i < n-1):
-            result += " "
-    result += "]"
-    return result
-
-def argmax(eltype, S, ls):
-    mIdx = -1
-    mFnd = eltype.zero()
-    for i in S:
-        if (mFnd < ls[i]):
-            mFnd = ls[i]
-            mIdx = i
-    return mIdx
+            return self.elt.__repr__()

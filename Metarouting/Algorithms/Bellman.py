@@ -15,27 +15,53 @@
 # imitations under the License.
 
 from Metarouting.Algebra.Semiring import *
-from Metarouting.Algebra.Matrix import *
+from Metarouting.Algebra.RoutingMatrix import *
 from Metarouting.Utils.Utilities import *
 
-def bellman(G, s):
+def bellmanR(G, s):
+    # Solving R = R*A + I
+    # Computing the s-th row vector of R*
     n = G.order()
-    pi = Matrix.unit(G.type, n, row = s)
+    pi = RoutingMatrix.unit(G.type, n, row = s)
+    # Next-hop vector
     nh = n * [0]
 
-    cnt = 0
-    iRange = range(1, n+1)
-    jRange = range(1, n+1)
-    while(cnt < n):
-        for i in iRange:
-            for j in jRange:
-                alt = pi[i] * G(i,j)
-                if (alt < pi[j]):
-                    pi[j] = alt
-                    nh[j-1] = i
-        cnt += 1
-    for i in iRange:
-        for j in jRange:
-            if(pi[i] * G(i,j) < pi[j]):
-                print "Graph contains a negative-weighted cycle"
+    k = 0
+    while (k < n):
+        q = 0
+        while (q < n):
+            d = 0
+            while (d < n):
+                alt = pi[q] * G(q,d)
+                if (alt < pi[d]):
+                    pi[d] = alt
+                    nh[d] = q
+                d += 1
+            q += 1
+        k += 1
     return (pi, nh)
+
+def bellmanL(G, d):
+    # Solving L = A*L + I
+    # Computing the d-th column vector of L*
+    n = G.order()
+    pi = RoutingMatrix.unit(G.type, n, row = d)
+    # Previous-hop vector
+    ph = n * [0]
+
+    k = 0
+    while (k < n):
+        q = 0
+        while (q < n):
+            s = 0
+            while (s < n):
+                alt = G(s,q) * pi[q]
+                if (alt < pi[s]):
+                    pi[s] = alt
+                    ph[s] = q
+                s += 1
+            q += 1
+        k += 1
+    return (pi, ph)
+
+bellman = bellmanR

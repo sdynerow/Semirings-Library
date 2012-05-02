@@ -18,7 +18,7 @@ from Metarouting.Algebra.RoutingMatrix import *
 from Metarouting.Algebra.MappingMatrix import *
 
 from Metarouting.Policy.Routing.ShortestR import *
-from Metarouting.Policy.Mapping.ShortestF import *
+from Metarouting.Policy.Mapping.ShortestM import *
 from Metarouting.Policy.Mapping.Potatoes import *
 
 from Metarouting.Algorithms.Dijkstra import *
@@ -37,12 +37,12 @@ m = RoutingMatrix(5, 5, [ I, 2, 1, 6, I
                         , 6, I, 4, I, I
                         , I, 4, 3, I, I], cast = ShortestR)
 
-I = ShortestF.zeroElt
+I = ShortestM.zeroElt
 fSimple = MappingMatrix(5, 2, [ I, I 
                               , 3, I
                               , I, I
                               , I, 1
-                              , 2, 3], cast = ShortestF)
+                              , 2, 3], cast = ShortestM)
 
 fHot = MappingMatrix(5, 2, [  None,  None 
                            , (0,3),  None

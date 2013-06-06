@@ -14,12 +14,12 @@ instance Show BoundedShortestPath where
 
 instance Semiring (BoundedShortestPath) where
   add (BSP x) (BSP y) = BSP (min x y)
-  addId = mu
+  zero = mu
 
   mul (BSP x) (BSP y)
     | (x + y < 15) = BSP (x + y)
     |   otherwise  = mu
-  mulId = (BSP 0)
+  unit = (BSP 0)
 
 mu :: BoundedShortestPath
 mu = (BSP intMu)

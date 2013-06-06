@@ -26,6 +26,6 @@ instance Show MostReliablePath where
 
 instance Semiring (MostReliablePath) where
   add (MR a) (MR b) = MR (max a b)
-  addId = (MR 0.0)
+  zero = (MR 0.0)
   mul (MR a) (MR b) = MR (a * b)
-  mulId = (MR 1.0)
+  unit = (MR 1.0)

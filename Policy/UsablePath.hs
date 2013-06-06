@@ -28,10 +28,10 @@ instance Show UsablePath where
 
 instance Semiring UsablePath where
   add (U a) (U b) = U (max a b)
-  mul (U a) (U b) = U (min a b)
+  zero = (U 0)
 
-  addId = (U 0)
-  mulId = (U 1)
+  mul (U a) (U b) = U (min a b)
+  unit = (U 1)
 
 instance LaTeX UsablePath where
   toLaTeX (U 0) = "\\ko"

@@ -15,6 +15,8 @@ module Policy.ShortestPathNeg
 ( ShortestPathNeg(..)
 ) where
 
+import LaTeX
+
 import Algebra.Semiring
 
 data ShortestPathNeg = SPN Int | Inf
@@ -24,12 +26,16 @@ instance Show ShortestPathNeg where
   show (SPN x) = show x
   show Inf = "∞"
 
+instance LaTeX ShortestPathNeg where
+  toLaTeX (SPN x) = "\\mpzc{" ++ show x ++ "}"
+  toLaTeX Inf = "\\infty"
+
 instance Semiring (ShortestPathNeg) where
-  addId = Inf
   add Inf x = x
   add x Inf = x
   add (SPN x) (SPN y) = SPN (min x y)
+  zero = Inf
 
-  mulId = (SPN 0)
   mul (SPN x) (SPN y) = SPN (x + y)
   mul _ _ = Inf
+  unit = (SPN 0)

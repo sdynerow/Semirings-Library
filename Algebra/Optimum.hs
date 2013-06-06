@@ -12,60 +12,79 @@
 -- imitations under the License.
 
 module Algebra.Optimum
-( leftLocalOptimum
-, rightLocalOptimum
-, stdLeftLocOpt
-, stdRightLocOpt
---, globalOptimum
+( llo1
+, rlo1
+, llo2
+, rlo2
+, lloStd
+, rloStd
+, lloMem
+, rloMem
+, lloStdDepth
+, rloStdDepth
+, lloMemDepth
+, rloMemDepth
 ) where
 
 import Algebra.Semiring
 import Algebra.Matrix
 
-magic :: [s] -> [[[s]]] -> [[s]]
-magic as bs = foldl (++) [] (zipWith (\a ps -> (map (\p -> a:p) ps)) as bs)
+data LatticeStep = LessT | Equiv
 
-leftLocalOptimum :: (Semiring s) => s -> s -> s -> s
-leftLocalOptimum a b x = if (x == uLocOpt)
-		         then x
-			 else leftLocalOptimum a b uLocOpt
-  where uLocOpt = add (mul a x) b
+instance Show LatticeStep where
+  show LessT = "<"
+  show Equiv = "|" --"≈"
 
-rightLocalOptimum :: (Semiring s) => s -> s -> s -> s
-rightLocalOptimum  a b x = if (x == uLocOpt)
-		          then x
-			  else rightLocalOptimum a b uLocOpt
-  where uLocOpt = add (mul x a) b
+norChar :: (Semiring s) => s -> s -> LatticeStep
+norChar a b = if (nor a b) then LessT else Equiv
 
-stdLeftLocOpt :: (Semiring s) => s -> s -> s
-stdLeftLocOpt a x = leftLocalOptimum a mulId x
+llo1 :: (Semiring s) => s -> s -> s -> s
+llo1 a b x = if (x == updated) then x else llo1 a b updated
+  where updated = add (mul a x) b
+rlo1 :: (Semiring s) => s -> s -> s -> s
+rlo1 a b x = if (x == updated) then x else rlo1 a b updated
+  where updated = add (mul x a) b
 
-stdRightLocOpt :: (Semiring s) => s -> s -> s
-stdRightLocOpt a x = rightLocalOptimum a mulId x
+lloDepth1 :: (Semiring s) => s -> s -> s -> [LatticeStep]
+lloDepth1 a b x = if (x == updated) then [] else (norChar updated x) : lloDepth1 a b updated
+  where updated = add (mul a x) b
+rloDepth1 :: (Semiring s) => s -> s -> s -> [LatticeStep]
+rloDepth1 a b x = if (x == updated) then [] else (norChar updated x) : rloDepth1 a b updated
+  where updated = add (mul x a) b
 
---class GlobalOptimum s where
---  globalOptimum :: Matrix s -> Matrix s
---  collapse :: [[[[s]]]] -> Matrix s
---  newPower :: Matrix s -> Int -> [[[[s]]]]
---
---instance (Semiring s) => GlobalOptimum s where
---  globalOptimum (M as) =
---    foldl add addId [collapse (newPower (M as) i) | i <- [0..n]]
---      where n = order as
---
---  collapse cp =
---    M [[foldl add addId (map (foldl mul mulId) bs) | bs <- as] | as <- cp]
---
---  newPower (M as) 0 = [[ [[kronecker i j]] | j <- [1..n]] | i <- [1..n]]
---    where n = order as
---  newPower (M as) n =
---    [[magic a b | b <- transpose (newPower (M as) (n-1))] | a <- as]
+llo2 :: (Semiring s) => s -> s -> s
+llo2 a x = if (x == updated) then x else llo2 a updated
+  where updated = add (mul a x) x
+rlo2 :: (Semiring s) => s -> s -> s
+rlo2 a x =  if (x == updated) then x else rlo2 a updated
+  where updated = add (mul x a) x
 
+lloDepth2 :: (Semiring s) => s -> s -> [LatticeStep]
+lloDepth2 a x = if (x == updated) then [] else (norChar updated x) : lloDepth2 a updated
+  where updated = add (mul a x) x
+rloDepth2 :: (Semiring s) => s -> s -> [LatticeStep]
+rloDepth2 a x = if (x == updated) then [] else (norChar updated x) : rloDepth2 a updated
+  where updated = add (mul x a) x
 
+lloStd :: (Semiring s) => s -> s
+lloStd a = llo1 a unit unit
 
+rloStd :: (Semiring s) => s -> s
+rloStd a = rlo1 a unit unit
 
+lloMem :: (Semiring s) => s -> s
+lloMem a = llo2 a unit
 
+rloMem :: (Semiring s) => s -> s
+rloMem a = rlo2 a unit
 
+lloStdDepth :: (Semiring s) => s -> [LatticeStep]
+lloStdDepth a = lloDepth1 a unit unit
+rloStdDepth :: (Semiring s) => s -> [LatticeStep]
+rloStdDepth a = rloDepth1 a unit unit
 
-
+lloMemDepth :: (Semiring s) => s -> [LatticeStep]
+lloMemDepth a = lloDepth2 a unit
+rloMemDepth :: (Semiring s) => s -> [LatticeStep]
+rloMemDepth a = rloDepth2 a unit
 

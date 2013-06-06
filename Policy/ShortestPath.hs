@@ -31,13 +31,13 @@ instance Semiring (ShortestPath) where
   add  Inft  (SP b) = SP b
   add (SP a)  Inft  = SP a
   add  Inft   Inft  = Inft
-  addId = Inft
+  zero = Inft
 
   mul (SP x) (SP y) = SP (x + y)
   mul (SP _)  Inft  = Inft
   mul  Inft  (SP _) = Inft
   mul  Inft   Inft  = Inft
-  mulId = (SP 0)
+  unit = (SP 0)
 
 -- Because I want to put nice matrices from the SP policy in LaTeX files :)
 instance LaTeX (ShortestPath) where

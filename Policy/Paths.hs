@@ -15,19 +15,50 @@
 
 module Policy.Paths
 ( Paths(..)
+, Path(..)
 ) where
 
+import Data.Set
 import Algebra.Semiring
 
-data Paths = AS [Int] | Full
-       deriving(Eq, Show)
+data Path = P [Int] | Invalid
+          deriving (Eq,Ord)
+
+instance Semiring (Path) where
+  add (P as) (P bs) = P as
+  add Invalid b = b
+  add a Invalid = a
+  zero = Invalid
+
+  mul (P as) (P bs) = P (as ++ bs)
+  mul Invalid _ = Invalid
+  mul _ Invalid = Invalid
+  unit = P []
+
+showPath :: (Show a) => [a] -> String
+showPath [] = "ε"
+showPath (a:[]) = show a
+showPath (a:as) = (show a) ++ (showPath as)
+
+instance Show Path where
+  show (P as) = showPath as
+  show Invalid = "∅"
+
+data Paths = PS (Set Path) | AllPaths
+          deriving(Eq)
+
+instance Show Paths where
+  show (PS as) = show (toList as)
+  show AllPaths = "All"
 
 instance Semiring (Paths) where
-  add (AS as) (AS bs) = if (asl <= bsl)
-      	      	      	then (AS as)
-			else (AS bs)
-    where asl = length as
-    	  bsl = length bs
-  addId = 
-  mul a b = b
-  mulId = Neutral
+  add AllPaths _ = AllPaths
+  add _ AllPaths = AllPaths
+  add (PS as) (PS bs) = PS (union as bs)
+  zero = PS empty
+  mul a AllPaths = a
+  mul AllPaths b = b
+  mul (PS as) (PS bs) = PS (fromList [mul a b | a <- asl, b <- bsl])
+                        where asl = toList as
+                              bsl = toList bs
+  unit = AllPaths

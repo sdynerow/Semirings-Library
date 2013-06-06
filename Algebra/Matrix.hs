@@ -13,8 +13,8 @@
 
 module Algebra.Matrix
 ( Matrix(..)
-, matrixAddId
-, matrixMulId
+, matrixZero
+, matrixUnit
 , order
 , transpose
 , pointwise
@@ -29,12 +29,12 @@ data Matrix s = M (Array (Int,Int) s)
      	      | MatAddId
 	      | MatMulId
 
-matrixAddId :: (Semiring s) => Int -> Matrix s
-matrixAddId n = M (array r [(idx, addId) | idx <- range r])
+matrixZero :: (Semiring s) => Int -> Matrix s
+matrixZero n = M (array r [(idx, zero) | idx <- range r])
   where r = ((1,1),(n,n))
 
-matrixMulId :: (Semiring s) => Int -> Matrix s
-matrixMulId n = M (array r [(idx, delta idx) | idx <- range r])
+matrixUnit :: (Semiring s) => Int -> Matrix s
+matrixUnit n = M (array r [(idx, delta idx) | idx <- range r])
   where r = ((1,1),(n,n))
         delta = \(i,j) -> kronecker i j
 
@@ -67,27 +67,27 @@ instance (Semiring s, Show s) => Show (Matrix s) where
 instance (Semiring s, Eq s) => Eq (Matrix s) where
   (==) MatAddId MatAddId = True
   (==) MatMulId MatMulId = True
-  (==) (M as) MatAddId = (==) (M as) (matrixAddId (order (M as)))
-  (==) MatAddId (M bs) = (==) (matrixAddId (order (M bs))) (M bs)
-  (==) (M as) MatMulId = (==) (M as) (matrixMulId (order (M as)))
-  (==) MatMulId (M bs) = (==) (matrixMulId (order (M bs))) (M bs)
+  (==) (M as) MatAddId = (==) (M as) (matrixZero (order (M as)))
+  (==) MatAddId (M bs) = (==) (matrixZero (order (M bs))) (M bs)
+  (==) (M as) MatMulId = (==) (M as) (matrixUnit (order (M as)))
+  (==) MatMulId (M bs) = (==) (matrixUnit (order (M bs))) (M bs)
   (==) (M as) (M bs) = as == bs
 
 instance Semiring s => Semiring (Matrix s) where
 
-  add MatAddId (M bs) = add (matrixAddId (arrayOrder bs)) (M bs)
-  add (M as) MatAddId = add (M as) (matrixAddId (arrayOrder as))
-  add MatMulId (M bs) = add (matrixMulId (arrayOrder bs)) (M bs)
-  add (M as) MatMulId = add (M as) (matrixMulId (arrayOrder as))
+  add MatAddId (M bs) = add (matrixZero (arrayOrder bs)) (M bs)
+  add (M as) MatAddId = add (M as) (matrixZero (arrayOrder as))
+  add MatMulId (M bs) = add (matrixUnit (arrayOrder bs)) (M bs)
+  add (M as) MatMulId = add (M as) (matrixUnit (arrayOrder as))
 
   add as bs = pointwise as bs add
 
-  addId = MatAddId
+  zero = MatAddId
 
-  mul MatAddId (M bs) = mul (matrixAddId (arrayOrder bs)) (M bs)
-  mul (M as) MatAddId = mul (M as) (matrixAddId (arrayOrder as))
-  mul MatMulId (M bs) = mul (matrixMulId (arrayOrder bs)) (M bs)
-  mul (M as) MatMulId = mul (M as) (matrixMulId (arrayOrder as))
+  mul MatAddId (M bs) = mul (matrixZero (arrayOrder bs)) (M bs)
+  mul (M as) MatAddId = mul (M as) (matrixZero (arrayOrder as))
+  mul MatMulId (M bs) = mul (matrixUnit (arrayOrder bs)) (M bs)
+  mul (M as) MatMulId = mul (M as) (matrixUnit (arrayOrder as))
 
   mul (M as) (M bs) | ((arrayOrder as) /= (arrayOrder bs)) =
     error "Incompatible matrices"
@@ -96,13 +96,24 @@ instance Semiring s => Semiring (Matrix s) where
     where r = bounds as
     	  n = arrayOrder as
 
-  mulId = MatMulId
+  unit = MatMulId
 
-  power as k = squareMultiply mul (matrixMulId (order as)) as k
+  nor (M as) (M bs) | ((arrayOrder as) /= (arrayOrder bs)) =
+    error "Incompatible matrices"
+  nor a MatAddId = nor a (matrixZero (order a))
+  nor MatAddId a = nor (matrixZero (order a)) a
+
+  nor MatMulId a = nor (matrixUnit (order a)) a
+  nor a MatMulId = nor a (matrixUnit (order a))
+
+  nor (M as) (M bs) | ((arrayOrder as) == (arrayOrder bs)) =
+    foldl (&&) True (zipWith (nor) (elems as) (elems bs))
+
+  power as k = squareMultiply mul (matrixUnit (order as)) as k
 
 computeOneElt :: (Semiring s) => Matrix s -> Matrix s -> (Int,Int) -> s
 computeOneElt (M as) (M bs) (i,j) | ((arrayOrder as) == (arrayOrder bs)) =
-  foldl add addId [mul (as!(i,q)) (bs!(q,j)) | q <- [1..n]]
+  foldl add zero [mul (as!(i,q)) (bs!(q,j)) | q <- [1..n]]
   where n = arrayOrder as
 
 

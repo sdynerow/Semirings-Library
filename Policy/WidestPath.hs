@@ -29,13 +29,13 @@ instance Show WidestPath where
 instance Semiring WidestPath where
   add (WP a) (WP b) = WP (max a b)
   add _ _ = Inf
-  addId = WP 0
+  zero = WP 0
 
   mul (WP a) (WP b) = WP (min a b)
   mul Inf x = x
   mul x Inf = x
-  mulId = Inf
+  unit = Inf
 
 instance LaTeX WidestPath where
-  toLaTeX (WP x) = "\\mpzc{" ++ show x ++ "}"
+  toLaTeX (WP x) = "\\textifsym{" ++ show x ++ "}"
   toLaTeX  Inf   = "\\infty"

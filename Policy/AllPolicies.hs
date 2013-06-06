@@ -16,6 +16,8 @@ import Policy.WidestPath
 import Policy.ShortestPath
 import Policy.ShortestPathNeg
 import Policy.MostReliablePath
+import Policy.Paths
+import Policy.PathCount
 
 import Algebra.Semiring
 import Algebra.Matrix

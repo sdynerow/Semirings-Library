@@ -28,8 +28,8 @@ instance (Show s, Show t) => Show (Direct s t) where
   show (Dir d) = show d
 
 instance (Semiring s, Semiring t) => Semiring (Direct s t) where
-  addId = Dir (addId, addId)
-  mulId = Dir (mulId, mulId)
+  zero = Dir (zero, zero)
+  unit = Dir (unit, unit)
   add (Dir (s1, t1)) (Dir (s2, t2)) = Dir (add s1 s2, add t1 t2)
   mul (Dir (s1, t1)) (Dir (s2, t2)) = Dir (mul s1 s2, mul t1 t2)
 

@@ -18,6 +18,9 @@ import Examples.ShortestPath
 import Examples.ShortestPathNeg
 import Examples.MostReliablePath
 import Examples.BoundedShortestPath
+import Examples.RegularPath
+import Examples.Paths
+import Examples.PathCount
 
 import Algebra.Matrix
 import Algebra.Semiring

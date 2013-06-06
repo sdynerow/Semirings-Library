@@ -20,40 +20,58 @@ import LaTeX
 import Algebra.Semiring
 import Algebra.Matrix
 
-data Scoped s t = Int t
+data Scoped s t = Int (s,t)
      	      	| Ext (s,t)
 		| AddId
 		| MulId
   deriving (Eq)
 
 instance (Show s, Show t) => Show (Scoped s t) where
-  show (Int t) = "I" ++ show t
-  show (Ext (s,t)) = "E" ++ show (s,t)
+  show (Int (s,t)) = "(" ++ show s ++ "," ++ show t ++ ")"
+  show (Ext (s,t)) = ")" ++ show s ++ "," ++ show t ++ "("
   show AddId = "A"
   show MulId = "M"
 
-instance (Semiring s, Semiring t) => Semiring (Scoped s t) where
-  addId = AddId
-  mulId = MulId
+internalAdd :: (Semiring s, Semiring t) => (s,t) -> (s,t) -> (s,t)
+internalAdd (s1,t1) (s2,t2)
+      | (addS == s1 && addS == s2) = (addS,add t1 t2)
+      | (addS == s1 && addS /= s2 && (t1 /= zero || t2 == zero)) = (s1,t1)
+      | (addS /= s1 && addS == s2 &&  t1 /= zero && t2 == zero)  = (s1,t1)
 
-  add (Ext (s1,t1)) (Ext (s2,t2))
-      | (addS == s1 && addS == s2) = Ext (addS,add t1 t2)
-      | (addS == s1) = Ext (s1,t1)
-      | (addS == s2) = Ext (s2,t2)
-      | otherwise    = Ext (addS, addId)
+      | (addS /= s1 && addS == s2 && (t1 == zero || t2 /= zero)) = (s2,t2)
+      | (addS == s1 && addS /= s2 &&  t1 == zero && t2 /= zero)  = (s2,t2)
+      | otherwise    = (addS, zero)
           where addS = add s1 s2
-  add (Int t1) (Int t2) = Int (add t1 t2)
-  add (Int t1) (Ext  _) = Int t1
-  add (Ext  _) (Int t2) = Int t2
+
+instance (Semiring s, Semiring t) => Semiring (Scoped s t) where
+  zero = AddId
+  unit = MulId
+
+  add (Int i1) (Int i2) = Int (add s1 s2, add t1 t2)
+    where (s1, t1) = i1
+    	  (s2, t2) = i2
+  add (Int i1) (Ext e2)
+      | (addS /= s1 && addS == s2 && t1 == zero && t2 /= zero) = Ext e2
+      |       	       	       	     	   	       otherwise = Int i1
+      where (s1, t1) = i1
+      	    (s2, t2) = e2
+	    addS = add s1 s2
+  add (Ext e1) (Int i2) = add (Int i2) (Ext e1)
+  add (Ext e1) (Ext e2) = Ext (internalAdd e1 e2)
+
   add AddId x = x
   add x AddId = x
   add MulId x = MulId
   add x MulId = MulId
 
-  mul (Int b1) (Int b2) = Int (mul b1 b2)
-  mul (Int b1) (Ext (a2,b2)) = Ext (a2, mul b1 b2)
-  mul (Ext (a1,b1)) (Int b2) = Ext (a1, b1)
-  mul (Ext (a1,b1)) (Ext (a2,b2)) = Ext (mul a1 a2, b1)
+  mul (Int (s1,t1)) (Int (s2,t2)) = Int (mul s1 s2, mul t1 t2)
+  mul (Int (s1,t1)) (Ext (s2,t2)) = Ext (mul s1 s2, mul t1 t2)
+  mul (Ext (s1,t1)) (Int (s2,t2)) 
+      | (t2 /= zero) = Ext (mul s1 s2, t1)
+      | (t2 == zero) = Ext (mul s1 s2, zero)
+  mul (Ext (s1,t1)) (Ext (s2,t2))
+      | (t2 /= zero) = Ext (mul s1 s2, t1)
+      | (t2 == zero) = Ext (mul s1 s2, zero)
 
   mul x AddId = AddId
   mul AddId x = AddId
@@ -62,7 +80,7 @@ instance (Semiring s, Semiring t) => Semiring (Scoped s t) where
 
 -- Because I want to put nice matrices from the SP policy in LaTeX files :)
 instance (LaTeX s, LaTeX t) => LaTeX (Scoped s t) where
-  toLaTeX (Int t) = "\\mpzc{I}[" ++ toLaTeX t ++ "]"
-  toLaTeX (Ext (s,t)) = "\\mpzc{E}(" ++ toLaTeX s ++ "," ++ toLaTeX t ++ ")"
+  toLaTeX (Int (s,t)) = "\\left(" ++ toLaTeX s ++ "," ++ toLaTeX t ++ "\\right)"
+  toLaTeX (Ext (s,t)) = "\\left)" ++ toLaTeX s ++ "," ++ toLaTeX t ++ "\\right("
   toLaTeX AddId = "\\AddId"
   toLaTeX MulId = "\\MulId"

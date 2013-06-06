@@ -21,16 +21,18 @@ import LaTeX
 
 import Algebra.Semiring
 
-data LocalPreference = LP Int | Infinity | NA
+data LocalPreference = LP Int | Infinity
        deriving(Eq, Show)
 
 instance Semiring (LocalPreference) where
   add (LP a) (LP b) = LP (min a b)
+  add (LP a) Infinity = LP a
+  add Infinity (LP b) = LP b
+  add _ _ = Infinity
   addId = Infinity
   mul a _ = a
-  mulId = NA
+  mulId = Infinity
 
 instance LaTeX (LocalPreference) where
   toLaTeX (LP x) = show x
   toLaTeX Infinity = "\\infty"
-  toLaTeX NA = "NA"

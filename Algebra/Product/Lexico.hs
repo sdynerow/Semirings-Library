@@ -16,6 +16,8 @@ module Algebra.Product.Lexico
 , lexico
 ) where
 
+import LaTeX
+
 import Algebra.Matrix
 import Algebra.Semiring
 
@@ -25,14 +27,17 @@ data Lexico s t = Lex (s,t)
 instance (Show s, Show t) => Show (Lexico s t) where
   show (Lex l) = show l
 
+instance (LaTeX s, LaTeX t) => LaTeX (Lexico s t) where
+  toLaTeX (Lex p) = toLaTeX p
+
 instance (Semiring s, Semiring t) => Semiring (Lexico s t) where
-  addId = Lex (addId, addId)
-  mulId = Lex (mulId, mulId)
+  zero = Lex (zero, zero)
+  unit = Lex (unit, unit)
   add (Lex (s1,t1)) (Lex (s2,t2))
       | (addS == s1 && addS == s2) = Lex (addS,add t1 t2)
       | (addS == s1) = Lex (s1,t1)
       | (addS == s2) = Lex (s2,t2)
-      | otherwise    = Lex (addS, addId)
+      | otherwise    = Lex (addS, zero)
           where addS = add s1 s2
   mul (Lex (s1, t1)) (Lex (s2, t2)) = Lex (mul s1 s2, mul t1 t2)
 

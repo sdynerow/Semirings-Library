@@ -52,4 +52,10 @@ wpExamples 6 = M (toArray 6 [ zero, WP 2, WP 1, zero, zero, zero
                             , zero, zero, zero, zero, zero, WP 2
                             , zero, zero, zero, zero, zero, zero])
 
+wpExamples 7 = M (toArray 5 [ zero, WP 1, zero, zero, zero
+                            , zero, zero, WP 2, zero, WP 1
+                            , zero, zero, zero, WP 3, WP 2
+                            , zero, zero, zero, zero, WP 3
+                            , zero, zero, zero, zero, zero])
+
 wpExamples _ = error "Undefined example of WidestPath"

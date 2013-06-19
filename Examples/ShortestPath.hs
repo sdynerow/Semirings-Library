@@ -75,4 +75,10 @@ spExamples 10 = M (toArray 5 [ zero, SP 1, zero, zero, zero
 	                     , zero, SP 1, SP 1, zero, zero
        	                     , zero, SP 1, SP 1, zero, zero])
 
+spExamples 11 = M (toArray 5 [ zero, SP 1, zero, zero, zero
+	       	 	     , zero, zero, SP 1, zero, SP 1
+	       	 	     , zero, zero, zero, SP 1, SP 1
+                             , zero, zero, zero, zero, SP 1
+                             , zero, zero, zero, zero, zero])
+
 spExamples _ = error "Undefined example of ShortestPath"

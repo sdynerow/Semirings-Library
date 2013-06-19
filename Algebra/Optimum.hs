@@ -29,14 +29,19 @@ module Algebra.Optimum
 import Algebra.Semiring
 import Algebra.Matrix
 
-data LatticeStep = LessT | Equiv
+data LatticeStep = Lt | Gt | Eq | Pa
 
 instance Show LatticeStep where
-  show LessT = "<"
-  show Equiv = "|" --"≈"
+  show Lt = "<"
+  show Gt = ">"
+  show Eq = "≈"
+  show Pa = "|"
 
 norChar :: (Semiring s) => s -> s -> LatticeStep
-norChar a b = if (nor a b) then LessT else Equiv
+norChar a b | (nor a b) && (nor b a) = Eq
+norChar a b | (nor a b) = Lt
+norChar a b | (nor b a) = Gt
+norChar a b | otherwise = Pa
 
 llo1 :: (Semiring s) => s -> s -> s -> s
 llo1 a b x = if (x == updated) then x else llo1 a b updated

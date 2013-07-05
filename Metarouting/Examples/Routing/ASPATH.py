@@ -16,28 +16,29 @@
 
 from Metarouting.Algebra.RoutingMatrix import *
 
-from Metarouting.Policy.Routing.Bottleneck import *
+from Metarouting.Policy.Routing.ASPATH import *
 
 from Metarouting.Algorithms.Dijkstra import *
-from Metarouting.Algorithms.APSP import *
+from Metarouting.Algorithms.Bellman import *
 
-#m = RoutingMatrix(4, 4, [ 0, 1, 2, 3
-#                        , 1, 0, 2, 3
-#                        , 2, 2, 0, 1
-#                        , 3, 3, 1, 0], cast=Bottleneck)
+def solveAPSP(algo, algoName, matrix):
+    i = 0
+    n = matrix.order()
+    while(i < n):
+        (pi, nh) = algo(matrix, i)
+        print algoName + " [s=" + str(i) + "]: pi: " + str(pi) + " nh: " + nhStr(nh)
+        i += 1
 
-m = RoutingMatrix(5, 5, [ 0, 1, 0, 2, 6
-                        , 1, 0, 3, 5, 4
-                        , 0, 3, 0, 4, 0
-                        , 2, 5, 4, 0, 0
-                        , 6, 4, 0, 0, 0], cast=Bottleneck)
 
-print "Input matrix:\n" + str(m) + "\n"
 
-llo = m.leftLocalOptimum()
-rlo = m.rightLocalOptimum()
-
-print "LLO:\n" + str(llo) + "\n"
-print "RLO:\n" + str(rlo) + "\n"
-
-solveAPSP(dijkstraR, "DijkstraR", m)
+#m = RoutingMatrix (5, 5, bRoutingMatrix, cast=ASPATH)
+#
+#print "Input matrix:\n" + str(m) + "\n"
+#
+#llo = m.leftLocalOptimum()
+#rlo = m.rightLocalOptimum()
+#
+#print "LLO:\n" + str(llo) + "\n"
+#print "RLO:\n" + str(rlo) + "\n"
+#
+#solveAPSP(dijkstraR, "DijkstraR", m)

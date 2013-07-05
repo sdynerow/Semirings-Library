@@ -16,21 +16,18 @@
 
 from Metarouting.Algebra.RoutingMatrix import *
 
-from Metarouting.Policy.Routing.Bottleneck import *
+from Metarouting.Policy.Routing.ShortestOnShortest import *
 
-from Metarouting.Algorithms.Dijkstra import *
 from Metarouting.Algorithms.APSP import *
+from Metarouting.Algorithms.Bellman import *
+from Metarouting.Algorithms.Dijkstra import *
 
-#m = RoutingMatrix(4, 4, [ 0, 1, 2, 3
-#                        , 1, 0, 2, 3
-#                        , 2, 2, 0, 1
-#                        , 3, 3, 1, 0], cast=Bottleneck)
-
-m = RoutingMatrix(5, 5, [ 0, 1, 0, 2, 6
-                        , 1, 0, 3, 5, 4
-                        , 0, 3, 0, 4, 0
-                        , 2, 5, 4, 0, 0
-                        , 6, 4, 0, 0, 0], cast=Bottleneck)
+R0 = ShortestR.zeroElt
+m = RoutingMatrix(5, 5, [ (R0, R0), (R0,  2), (R0, R0), ( 2,  4), ( 1, R0)
+                        , (R0,  2), (R0, R0), (R0,  1), ( 3,  3), ( 1, R0)
+                        , (R0, R0), (R0,  1), (R0, R0), ( 4,  1), ( 1,  1)
+                        , ( 2,  4), ( 3,  3), ( 4,  1), (R0, R0), ( 1,  3)
+                        , ( 1, R0), ( 1, R0), ( 1,  1), ( 1,  3), (R0, R0)], cast=ShortestOnShortest)
 
 print "Input matrix:\n" + str(m) + "\n"
 
@@ -40,4 +37,8 @@ rlo = m.rightLocalOptimum()
 print "LLO:\n" + str(llo) + "\n"
 print "RLO:\n" + str(rlo) + "\n"
 
-solveAPSP(dijkstraR, "DijkstraR", m)
+solveAPSP(dijkstraR, "Dijkstra R ( D)", m)
+print
+solveAPSP(dijkstraNDR, "Dijkstra R (ND)", m)
+print
+solveAPSP(dijkstraNDL, "Dijkstra L (ND)", m)

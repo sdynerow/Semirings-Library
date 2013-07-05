@@ -1,1 +1,1 @@
-__all__ = [ "ASPATH", "BGP", "Bottleneck", "Shortest", "WidestShortest" ]
+__all__ = [ "ASPATH", "BGP", "Bottleneck", "Shortest", "Tunnel", "WidestShortest" ]

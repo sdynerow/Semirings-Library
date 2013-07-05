@@ -16,63 +16,51 @@
 
 from Metarouting.Algebra.Matrix import *
 from Metarouting.Algebra.RoutingMatrix import *
-from Metarouting.Algebra.MappingMatrix import *
 
 from Metarouting.Policy.Routing.ShortestR import *
-from Metarouting.Policy.Mapping.ShortestM import *
+from Metarouting.Policy.Routing.WidestShortest import *
+from Metarouting.Policy.Routing.Tapping import *
 
 from Metarouting.Algorithms.APSP import *
-from Metarouting.Algorithms.Mohri import *
 from Metarouting.Algorithms.Bellman import *
 from Metarouting.Algorithms.Dijkstra import *
 
 R0 = ShortestR.zeroElt
-R1 = ShortestR.unitElt
-FI = ShortestM.zeroElt
 
-m1 = RoutingMatrix(4, 4, [ R0, 1, 2, 4
-                         , 1, R0, 2, 4
-                         , 2,  2,R0, 1
-                         , 4,  4, 1,R0], cast=ShortestR)
+mSP = RoutingMatrix(5, 5, [ (R0, 'a'), ( 1, 'a'), (R0, 'a'), ( 2, 'a'), ( 6, 'a')
+                          , ( 1, 'b'), (R0, 'b'), ( 3, 'b'), ( 5, 'b'), ( 4, 'b')
+                          , (R0, 'c'), ( 3, 'c'), (R0, 'c'), ( 4, 'c'), (R0, 'c')
+                          , ( 2, 'd'), ( 5, 'd'), ( 4, 'd'), (R0, 'd'), (R0, 'd')
+                          , ( 6, 'e'), ( 4, 'e'), (R0, 'e'), (R0, 'e'), (R0, 'e')], cast=TappingSP)
 
-m2 = RoutingMatrix(5, 5, [ R0, 2, 1, 6, R0
-                         , 2, R0, 5, R0, 4
-                         , 1, 5, R0, 4, 3
-                         , 6, R0, 4, R0, R0
-                         , R0, 4, 3, R0, R0], cast=ShortestR)
+W0 = WidestShortest.zeroElt
+mWS = RoutingMatrix(5, 5, [ (( 0,W0), '1'), ((5, 1), '1'), ((0,W0), '1'), ((0,W0), '1'), (( 0,W0), '1')
+                          , (( 0,W0), '2'), ((0,W0), '2'), ((0,W0), '2'), ((0,W0), '2'), (( 0,W0), '2')
+                          , (( 0,W0), '3'), ((5, 4), '3'), ((0,W0), '3'), ((5, 1), '3'), (( 0,W0), '3')
+                          , (( 5, 1), '4'), ((0,W0), '4'), ((0,W0), '4'), ((0,W0), '4'), ((10, 1), '4')
+                          , ((10, 5), '5'), ((0,W0), '5'), ((5, 1), '5'), ((0,W0), '5'), (( 0,W0), '5')], cast=TappingWSP)
 
-mAsub = RoutingMatrix(4, 4, [ R0, 2, R0, 4
-                            , 2, R0, 1, 3
-                            , R0, 1, R0, 1
-                            , 4, 3, 1, R0], cast=ShortestR)
+mNH = RoutingMatrix(5, 5, [ (R0, 'a'), ( 1, 'b'), (R0, 'c'), ( 2, 'd'), ( 6, 'e')
+                          , ( 1, 'a'), (R0, 'b'), ( 3, 'c'), ( 5, 'd'), ( 4, 'e')
+                          , (R0, 'a'), ( 3, 'b'), (R0, 'c'), ( 4, 'd'), (R0, 'e')
+                          , ( 2, 'a'), ( 5, 'b'), ( 4, 'c'), (R0, 'd'), (R0, 'e')
+                          , ( 6, 'a'), ( 4, 'b'), (R0, 'c'), (R0, 'd'), (R0, 'e')], cast=TappingNH)
 
-mAsubstar = RoutingMatrix(5, 5, [ R1, 2, 3, 4, R0
-                                , 2, R1, 1, 2, R0
-                                , 3, 1, R1, 1, 1
-                                , 4, 2, 1, R1, 3
-                                , R0, R0, 1, 3, R0], cast=ShortestR)
+mWSNH = RoutingMatrix(5, 5, [ (( 0,W0), '1'), ((5, 1), '2'), ((0,W0), '3'), ((0,W0), '4'), (( 0,W0), '5')
+                            , (( 0,W0), '1'), ((0,W0), '2'), ((0,W0), '3'), ((0,W0), '4'), (( 0,W0), '5')
+                            , (( 0,W0), '1'), ((5, 4), '2'), ((0,W0), '3'), ((5, 1), '4'), (( 0,W0), '5')
+                            , (( 5, 1), '1'), ((0,W0), '2'), ((0,W0), '3'), ((0,W0), '4'), ((10, 1), '5')
+                            , ((10, 5), '1'), ((0,W0), '2'), ((5, 1), '3'), ((0,W0), '4'), (( 0,W0), '5')], cast=TappingWSPNH)
 
-mA = RoutingMatrix(5, 5, [ R0, 2, R0, 4, R0
-                         , 2, R0, 1, 3, R0
-                         , R0, 1, R0, 1, 1
-                         , 4, 3, 1, R0, 3
-                         , R0, R0, 1, 3, R0], cast=ShortestR)
+print "A :\n" + str(mSP) + "\n"
 
-print "Mohri's Way"
-
-print str(mohri(mA, 1)) + "\n"
-print str(mA.leftLocalOptimum()) + "\n"
-print str(mA.rightLocalOptimum())
-
-exit(0)
-
-print "mAsub :\n" + str(mAsub)
-
-llo = mAsub.leftLocalOptimum()
-rlo = mAsub.rightLocalOptimum()
+llo = mSP.leftLocalOptimum()
+rlo = mSP.rightLocalOptimum()
 
 print "LLO (solution to L = (A ⊗ L) ⊕ I):\n" + str(llo)
 print "RLO (solution to R = (R ⊗ A) ⊕ I):\n" + str(rlo)
+
+exit(0)
 
 print "mAsub* :\n" + str(mAsubstar)
 

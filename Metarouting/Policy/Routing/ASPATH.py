@@ -19,33 +19,58 @@ from Metarouting.Algebra.Semiring import *
 class ASPATH(Semiring):
     ASNMAX = 65535
 
-    def __disjoint(sq, bl):
-        n = len(bl)
-        i = 0
-        while (i < n):
-            i += 1
-        return True
-
     def __add__(self, other):
-        (s1, b1) = self.elt
-        (s2, b2) = other.elt
-
+        s1 = self.elt
+        s2 = other.elt
         if(s1 == None):
-            return other
+            return ASPATH(s2)
         elif (s2 == None):
-            return self
-
+            return ASPATH(s1)
         n1 = len(s1)
         n2 = len(s2)
         if (n1 <= n2):
-            return self
+            return ASPATH(s1)
         else:
-            return other
+            return ASPATH(s2)
 
     def __mul__(self, other):
-        (s1, b1) = self.elt
-        (s2, b2) = other.elt
-        if(ASPATH.__disjoint(s2, b1)):
-            return ASPATH(s1 + s2, [])
+        s1 = self.elt
+        s2 = other.elt
+        if(s1 == None or s2 == None):
+            return ASPATH(None)
         else:
-            ASPATH.zero()
+            return ASPATH(s1 ++ s2)
+
+#class ASPATH(Semiring):
+#    ASNMAX = 65535
+#
+#    def __disjoint(sq, bl):
+#        n = len(bl)
+#        i = 0
+#        while (i < n):
+#            i += 1
+#        return True
+#
+#    def __add__(self, other):
+#        (s1, b1) = self.elt
+#        (s2, b2) = other.elt
+#
+#        if(s1 == None):
+#            return other
+#        elif (s2 == None):
+#            return self
+#
+#        n1 = len(s1)
+#        n2 = len(s2)
+#        if (n1 <= n2):
+#            return self
+#        else:
+#            return other
+#
+#    def __mul__(self, other):
+#        (s1, b1) = self.elt
+#        (s2, b2) = other.elt
+#        if(ASPATH.__disjoint(s2, b1)):
+#            return ASPATH(s1 + s2, [])
+#        else:
+#            ASPATH.zero()

@@ -32,12 +32,18 @@ m = RoutingMatrix(5, 5, [ (0, I), (5, 1), (0, I), (0, I), (0, I)
 
 print "Input matrix:\n" + str(m) + "\n"
 
-llo = m.leftLocalOptimum()
+
+llo = m.leftLocalOptimum2()
 rlo = m.rightLocalOptimum()
 
-print "LLO:\n" + str(llo) + "\n"
-print "RLO:\n" + str(rlo) + "\n"
+print str(m.rightLocalOptimum()) + "\n"
+print str(m.rightLocalOptimum2())
+
+#print "LLO:\n" + str(llo) + "\n"
+#print "RLO:\n" + str(rlo) + "\n"
 
 solveAPSP(dijkstraR, "Dijkstra R ( D)", m)
 print
-solveAPSP(dijkstraND, "Dijkstra R (ND)", m)
+solveAPSP(dijkstraNDR, "Dijkstra R (ND)", m)
+print
+solveAPSP(dijkstraNDL, "Dijkstra L (ND)", m)

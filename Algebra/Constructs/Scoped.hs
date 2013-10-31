@@ -11,7 +11,7 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Algebra.Product.Scoped
+module Scoped
 ( Scoped(..)
 ) where
 

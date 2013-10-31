@@ -16,6 +16,7 @@ wpExamples 0 = M (toArray 5 [ zero,  WP 1,  WP 4,  zero,  WP 5
                             , zero,  zero,  WP 9,  zero,  WP 2
                             , WP 5,  WP 3,  zero,  WP 2,  zero])
 
+-- First components of RIE paper example.
 wpExamples 1 = M (toArray 5 [ zero,  WP 5,  zero,  zero,  zero
           	            , zero,  zero,  zero,  zero,  zero
           	            , zero,  WP 5,  zero,  WP 5,  zero
@@ -57,5 +58,22 @@ wpExamples 7 = M (toArray 5 [ zero, WP 1, zero, zero, zero
                             , zero, zero, zero, WP 3, WP 2
                             , zero, zero, zero, zero, WP 3
                             , zero, zero, zero, zero, zero])
+
+wpExamples 8 = M (toArray 5 [ unit, zero, zero, zero, zero
+                            , zero, unit, zero, zero, zero
+                            , zero, zero, unit, zero, zero
+                            , zero, zero, zero, unit, zero
+                            , zero, zero, zero, zero, unit])
+
+-- Variant of first components of RIE paper example.
+wpExamples 9 = M (toArray 4 [ zero,  zero,  zero,  zero
+          	            , WP 5,  zero, WP 10,  zero
+          	            , WP 5,  zero,  zero, WP 10
+          	            , WP 5, WP 10,  zero,  zero])
+
+wpExamples 10 = M (toArray 4 [ zero,  WP 1,  zero, zero
+                             , zero,  zero,  WP 2, WP 2
+                             , zero,  zero,  zero, WP 1
+                             , zero,  zero,  zero, zero])
 
 wpExamples _ = error "Undefined example of WidestPath"

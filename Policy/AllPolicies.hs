@@ -18,14 +18,8 @@ import Policy.ShortestPathNeg
 import Policy.MostReliablePath
 import Policy.Paths
 import Policy.PathCount
+import Policy.NextHop
 
-import Algebra.Semiring
-import Algebra.Matrix
-
-import Algebra.Product.Direct
-import Algebra.Product.Lexico
-import Algebra.Product.Scoped
-
-import Algebra.Optimum
+import Algebra
 
 import LaTeX

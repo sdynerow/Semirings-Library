@@ -8,7 +8,7 @@ import LaTeX
 
 import Algebra.Matrix
 import Algebra.Semiring
-import Algebra.Product.Direct
+import Algebra.Constructs.Direct
 
 import Policy.ShortestPath
 import Policy.WidestPath

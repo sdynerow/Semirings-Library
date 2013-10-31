@@ -11,8 +11,8 @@ import LaTeX
 
 import Algebra.Matrix
 import Algebra.Semiring
-import Algebra.Product.Scoped
-import Algebra.Product.Lexico
+import Algebra.Constructs.Scoped
+import Algebra.Constructs.Lexico
 
 import Policy.WidestPath
 import Policy.ShortestPath

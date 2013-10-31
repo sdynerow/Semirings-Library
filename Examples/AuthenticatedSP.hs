@@ -6,7 +6,7 @@ import Algebra.Semiring
 
 import Algebra.Optimum
 
-import Algebra.Products
+import Algebra.Constructs
 
 import Policy.UsablePath
 import Policy.ShortestPath

@@ -28,12 +28,12 @@ instance Semiring (Path) where
   add (P as) (P bs) = P as
   add Invalid b = b
   add a Invalid = a
-  zero = Invalid
+  zero = P []
 
   mul (P as) (P bs) = P (as ++ bs)
   mul Invalid _ = Invalid
   mul _ Invalid = Invalid
-  unit = P []
+  unit = Invalid
 
 showPath :: (Show a) => [a] -> String
 showPath [] = "ε"
@@ -49,7 +49,7 @@ data Paths = PS (Set Path) | AllPaths
 
 instance Show Paths where
   show (PS as) = show (toList as)
-  show AllPaths = "All"
+  show AllPaths = "ALL"
 
 instance Semiring (Paths) where
   add AllPaths _ = AllPaths

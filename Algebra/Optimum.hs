@@ -43,9 +43,11 @@ norChar a b | (nor a b) = Lt
 norChar a b | (nor b a) = Gt
 norChar a b | otherwise = Pa
 
+-- Iterated solving of X = AX + B
 llo1 :: (Semiring s) => s -> s -> s -> s
 llo1 a b x = if (x == updated) then x else llo1 a b updated
   where updated = add (mul a x) b
+-- Iterated solving of X = XA + B
 rlo1 :: (Semiring s) => s -> s -> s -> s
 rlo1 a b x = if (x == updated) then x else rlo1 a b updated
   where updated = add (mul x a) b

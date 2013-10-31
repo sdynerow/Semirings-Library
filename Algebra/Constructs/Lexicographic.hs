@@ -11,9 +11,9 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Algebra.Product.Lexico
-( Lexico(..)
-, lexico
+module Algebra.Constructs.Lexicographic
+( Lexicographic(..)
+, lexicographic
 ) where
 
 import LaTeX
@@ -21,16 +21,16 @@ import LaTeX
 import Algebra.Matrix
 import Algebra.Semiring
 
-data Lexico s t = Lex (s,t)
+data Lexicographic s t = Lex (s,t)
   deriving (Eq)
 
-instance (Show s, Show t) => Show (Lexico s t) where
+instance (Show s, Show t) => Show (Lexicographic s t) where
   show (Lex l) = show l
 
-instance (LaTeX s, LaTeX t) => LaTeX (Lexico s t) where
+instance (LaTeX s, LaTeX t) => LaTeX (Lexicographic s t) where
   toLaTeX (Lex p) = toLaTeX p
 
-instance (Semiring s, Semiring t) => Semiring (Lexico s t) where
+instance (Semiring s, Semiring t) => Semiring (Lexicographic s t) where
   zero = Lex (zero, zero)
   unit = Lex (unit, unit)
   add (Lex (s1,t1)) (Lex (s2,t2))
@@ -41,9 +41,11 @@ instance (Semiring s, Semiring t) => Semiring (Lexico s t) where
           where addS = add s1 s2
   mul (Lex (s1, t1)) (Lex (s2, t2)) = Lex (mul s1 s2, mul t1 t2)
 
-lexico :: (Semiring s, Semiring t) => Matrix s -> Matrix t -> Matrix (Lexico s t)
-lexico as bs | (order as) == (order bs) = pointwise as bs zipL
+lexicographic :: (Semiring s, Semiring t) => Matrix s -> Matrix t -> Matrix (Lexicographic s t)
+lexicographic as bs | (order as) == (order bs) = pointwise as bs zipL
              | otherwise = error "Incompatibles matrice sizes"
 
-zipL :: s -> t -> Lexico s t
+zipL :: s -> t -> Lexicographic s t
 zipL s t = Lex (s, t)
+
+

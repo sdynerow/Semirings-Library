@@ -17,13 +17,7 @@ module Algebra.Semimodule
 
 import Algebra.Semiring
 
-class Semimodule s where
-  sadd  :: [s] -> [s] -> [s]
-  lSmul ::  s  -> [s] -> [s]
-  rSmul ::  s  -> [s] -> [s]
-
-instance (Semiring s) => Semimodule s where
-  sadd as bs | (length as) == (length bs) = zipWith (add) as bs
-             | otherwise = error "Incompatible vectors"
-  lSmul a bs = map (\b -> mul a b) bs
-  rSmul a bs = map (\b -> mul b a) bs
+class Semiring s => Semimodule s t where
+  sadd  :: t -> t -> t
+  lsmul :: s -> t -> t
+  rsmul :: t -> s -> t

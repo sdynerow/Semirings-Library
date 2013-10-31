@@ -2,7 +2,7 @@ module Examples.LexProd
 ( lpbwspExample
 ) where
 
-import Algebra.Product.Lexico
+import Algebra.Constructs.Lexico
 
 import Examples.ShortestPath
 import Examples.WidestPath

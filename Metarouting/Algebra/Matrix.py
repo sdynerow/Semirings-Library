@@ -44,9 +44,6 @@ class Matrix(Semiring):
         else:
             raise ValueError("Incompatible matrix sizes.")
 
-    def __le__(self, other):
-        raise NotImplementedError("Canonical preorder relation not specified.")        
-
     def __eq__(self, other):
         return (self.type == other.type and
                 self.rowCnt == other.rowCnt and
@@ -58,41 +55,37 @@ class Matrix(Semiring):
 
     def __repr__(self):
         result = ""
-        iRange = range(self.rowCnt)
-        jRange = range(self.colCnt)
-        if(self.rowCnt > 1):
-            hdr = "|"
-            ftr = "|"
-        else:
-            hdr = "["
-            ftr = "]"
+        iRange = range(1, self.rowCnt + 1)
+        jRange = range(1, self.colCnt + 1)
+        hdr = "|"
+        ftr = "|"
         for i in iRange:
             result += hdr
             for j in jRange:
                 result += str(self(i,j))
-                if(j < self.colCnt-1):
+                if(j < self.colCnt):
                     result += " "
                 else:
                     result += ftr
-            if (i < self.rowCnt-1):
+            if (i < self.rowCnt):
                 result += "\n"
         return result
 
     def __getitem__(self, i):
-        if ((self.rowCnt == 1 and 0 <= i and i < self.colCnt) or (self.colCnt == 1 and 0 <= i and i < self.rowCnt)):
-            return self.elts[i]
+        if ((self.rowCnt == 1 and 1 <= i and i <= self.colCnt) or (self.colCnt == 1 and 1 <= i and i <= self.rowCnt)):
+            return self.elts[i-1]
         else:
             raise ValueError("Computer says 'no'")
 
     def __setitem__(self, i, v):
-        if ((self.rowCnt == 1 and 0 <= i and i < self.colCnt) or (self.colCnt == 1 and 0 <= i and i < self.rowCnt)):
-            self.elts[i] = v
+        if ((self.rowCnt == 1 and 1 <= i and i <= self.colCnt) or (self.colCnt == 1 and 1 <= i and i <= self.rowCnt)):
+            self.elts[i-1] = v
         else:
             raise ValueError("Computer says 'no'")
 
     def __call__(self, i, j):
-        if (0 <= i and i < self.rowCnt and 0 <= j and j < self.colCnt):
-            return self.elts[i * self.colCnt + j]
+        if (1 <= i and i <= self.rowCnt and 1 <= j and j <= self.colCnt):
+            return self.elts[(i-1) * self.colCnt + (j-1)]
 
     def order(self):
         if(self.rowCnt == self.colCnt):
@@ -103,11 +96,11 @@ class Matrix(Semiring):
     @mixedmethod
     def transpose(self, cls):
         es = []
-        iRange = range(self.rowCnt)
-        jRange = range(self.colCnt)
+        iRange = range(1, self.rowCnt + 1)
+        jRange = range(1, self.colCnt + 1)
         for j in jRange:
             for i in iRange:
-                es.append(self.elts[i * self.colCnt + j])
+                es.append(self.elts[(i-1) * self.colCnt + j])
         return cls(self.colCnt, self.rowCnt, es)
 
     @mixedmethod

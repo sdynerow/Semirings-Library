@@ -19,7 +19,7 @@ from Metarouting.Algebra.RoutingMatrix import *
 from Metarouting.Utils.Utilities import *
 
 def bellmanR(G, s):
-    # Solving R = R*A + I
+    # Solving R = R*A + X
     # Computing the s-th row vector of R*
     n = G.order()
     pi = RoutingMatrix.unit(G.type, n, row = s)
@@ -42,7 +42,7 @@ def bellmanR(G, s):
     return (pi, nh)
 
 def bellmanL(G, d):
-    # Solving L = A*L + I
+    # Solving L = A*L + X
     # Computing the d-th column vector of L*
     n = G.order()
     pi = RoutingMatrix.unit(G.type, n, row = d)

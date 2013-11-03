@@ -21,5 +21,5 @@ def solveAPSP(algo, algoName, matrix):
     n = matrix.order()
     while(i < n):
         (pi, nh) = algo(matrix, i)
-        print algoName + " [s=" + str(i) + "]: pi: " + str(pi) + " nh: " + nhStr(nh)
+        print algoName + " [s=" + str(i+1) + "]: pi: " + str(pi) + " nh: " + nhStr(nh)
         i += 1

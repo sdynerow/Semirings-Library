@@ -59,10 +59,10 @@ class Semiring:
         return res
 
     def isZero(self):
-        return self.elt == self.zero
+        return self.elt == self.zeroElt
 
     def isUnit(self):
-        return self.elt == self.unit
+        return self.elt == self.unitElt
 
     @classmethod
     def zero(cls):

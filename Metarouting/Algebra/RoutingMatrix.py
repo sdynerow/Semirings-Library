@@ -33,9 +33,9 @@ class RoutingMatrix(Matrix):
         if(other.__class__ == RoutingMatrix):
             if(self.colCnt == other.rowCnt):
                 newElts = []
-                iRange = range(self.rowCnt)
-                jRange = range(other.colCnt)
-                kRange = range(self.colCnt)
+                iRange = range(1, self.rowCnt + 1)
+                jRange = range(1, other.colCnt + 1)
+                kRange = range(1, self.colCnt + 1)
                 for i in iRange:
                     for j in jRange:
                         newElts.append(reduce(lambda a, b: a + b, [self(i,k) * other(k,j) for k in kRange]));
@@ -48,7 +48,7 @@ class RoutingMatrix(Matrix):
             return NotImplemented
 
     def leftLocalOptimum(self, iterBnd = None, row = None, initL = None):
-        # Solving L = AL + I
+        # Solving L = AL + L
         n = self.order()
         if (initL == None):
             initL = RoutingMatrix.unit(self.type, n, row = row)
@@ -63,8 +63,24 @@ class RoutingMatrix(Matrix):
             iterCnt += 1
         return currL
 
+    def leftLocalOptimum2(self, iterBnd = None, row = None, initL = None):
+        # Solving L = AL + L
+        n = self.order()
+        if (initL == None):
+            initL = RoutingMatrix.unit(self.type, n, row = row)
+        prevL = initL
+        currL = (self * initL) + RoutingMatrix.unit(self.type, n)
+        iterCnt = 0
+        if (iterBnd == None):
+            iterBnd = 2 * n
+        while (currL != prevL and iterCnt < iterBnd):
+            prevL = currL
+            currL = (self * currL) + RoutingMatrix.unit(self.type, n)
+            iterCnt += 1
+        return currL
+
     def rightLocalOptimum(self, iterBnd = None, row = None, initR = None):
-        # Solving R = RA + I
+        # Solving R = RA + R
         n = self.order()
         if (initR == None):
             initR = RoutingMatrix.unit(self.type, n, row = row)
@@ -79,10 +95,26 @@ class RoutingMatrix(Matrix):
             iterCnt += 1
         return currR
 
+    def rightLocalOptimum2(self, iterBnd = None, row = None, initR = None):
+        # Solving R = RA + R
+        n = self.order()
+        if (initR == None):
+            initR = RoutingMatrix.unit(self.type, n, row = row)
+        prevR = initR
+        currR = (initR * self) + RoutingMatrix.unit(self.type, n)
+        iterCnt = 0
+        if (iterBnd == None):
+            iterBnd = 2 * n
+        while(currR != prevR and iterCnt < iterBnd):
+            prevR = currR
+            currR = (currR * self) + RoutingMatrix.unit(self.type, n)
+            iterCnt += 1
+        return currR
+
     @staticmethod
     def unit(eltype, n, row = None):
         if(n > 0):
-            ijRange = range(n)
+            ijRange = range(1, n + 1)
             if(row == None):
                 es = []
                 for i in ijRange:

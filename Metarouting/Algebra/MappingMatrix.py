@@ -18,46 +18,52 @@ from Metarouting.Algebra.Matrix import *
 from Metarouting.Algebra.RoutingMatrix import *
 
 class MappingMatrix(Matrix):
-    def __mul__(self, other):
-        if(isinstance(other, RoutingMatrix)):
-            return self.__lmul__(other)
+    def __mul__(self, fles):
+        if(isinstance(fles, RoutingMatrix)):
+            return self.__lmul__(fles)
         else:
             return NotImplemented
 
-    def __lmul__(self, other):
-        if(isinstance(other, RoutingMatrix)):
-            if(self.colCnt == other.rowCnt):
+    def __lmul__(self, fles):
+        if(isinstance(fles, RoutingMatrix)):
+            if(self.colCnt == fles.rowCnt):
                 newElts = []
-                iRange = range(self.rowCnt)
-                jRange = range(other.colCnt)
-                kRange = range(self.colCnt)
+                iRange = range(1, self.rowCnt + 1)
+                jRange = range(1, fles.colCnt + 1)
+                kRange = range(1, self.colCnt + 1)
                 for i in iRange:
                     for j in jRange:
-                        newElts.append(reduce(lambda a, b: a + b, [self(i,k) * other(k,j) for k in kRange]));
-                return MappingMatrix(self.rowCnt, other.colCnt, newElts)
+                        newElts.append(reduce(lambda a, b: a + b, [self(i,k) * fles(k,j) for k in kRange]));
+                return MappingMatrix(self.rowCnt, fles.colCnt, newElts)
             else:
                 raise ValueError("Incompatible matrix sizes.")
         else:
             return NotImplemented
 
-    def __rmul__(self, other):
-        if(isinstance(other, RoutingMatrix)):
-            if(self.rowCnt == other.colCnt):
+    def __rmul__(self, fles):
+        if(isinstance(fles, RoutingMatrix)):
+            if(self.rowCnt == fles.colCnt):
                 newElts = []
-                iRange = range(other.rowCnt)
-                jRange = range(self.colCnt)
-                kRange = range(other.colCnt)
+                iRange = range(1, fles.rowCnt + 1)
+                jRange = range(1, self.colCnt + 1)
+                kRange = range(1, fles.colCnt + 1)
                 for i in iRange:
                     for j in jRange:
                         tmp = list()
                         for k in kRange:
-                            tmp.append(other(i,k) * self(k,j))
+                            tmp.append(fles(i,k) * self(k,j))
                         newElts.append(reduce(lambda a, b: a + b, tmp));
-                return MappingMatrix(other.rowCnt, self.colCnt, newElts)
+                return MappingMatrix(fles.rowCnt, self.colCnt, newElts)
             else:
                 raise ValueError("Incompatible matrix sizes.")
         else:
             return NotImplemented
+
+
+
+
+
+
 
 
 

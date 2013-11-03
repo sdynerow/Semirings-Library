@@ -21,6 +21,7 @@ from Metarouting.Utils.Utilities import *
 def neighbors(G, T, i):
     neigh = list()
     for j in T:
+        print G(i,j)
         if (not G(i,j).isZero()):
             neigh.append(j)
     return neigh
@@ -33,26 +34,26 @@ def predecessors(G, T, i):
     return pred
     
 def dijkstraR(G, s):
-    # Solving R = R*A + I
+    # Solving R = RA + R
     # Computing the s-th row vector of R*
     n = G.order()
     pi = RoutingMatrix.unit(G.type, n, row = s)
     nh = n * [0]
-    T = range(n)
+    T = range(1,n+1)
     while(len(T) > 0):
         q = argmax(G.type, T, pi)
         if(q == -1):
             break
         T.remove(q)
-        for d in neighbors(G, T, q):
+        for d in range(1,n+1):#neighbors(G, T, q):
             alt = pi[q] * G(q,d)
             if (pi[d] < alt):
                 pi[d] = alt
-                nh[d] = q
+                nh[d-1] = q
     return (pi, nh)
 
 def dijkstraL(G, d):
-    # Solving L = A*L + I
+    # Solving L = AL + L
     # Computing the d-th column vector of L*
     n = G.order()
     pi = RoutingMatrix.unit(G.type, n, row = d)
@@ -67,12 +68,64 @@ def dijkstraL(G, d):
             alt = G(s,q) * pi[q]
             if (pi[s] < alt):
                 pi[s] = alt
-                ph[s] = q
+                ph[s] = q+1
+    return (pi, ph)
+
+# Source-based forwarding (list of hops stored at the source)
+def dijkstraNDR(G, s):
+    # Solving R = R*A + I
+    n = G.order()
+    pi = RoutingMatrix.unit(G.type, n, row = s)
+    nh = list()
+    i = 0
+    while (i < n):
+        nh.append(list())
+        i += 1
+    nh[s].append(s+1)
+    T = range(n)
+    while(len(T) > 0):
+        q = argmax(G.type, T, pi)
+        if(q == -1):
+            break
+        T.remove(q)
+        for d in neighbors(G, T, q):
+            alt = pi[q] * G(q,d)
+            if (pi[d] < alt):
+                pi[d] = alt
+                nh[d] = list(nh[q])
+                nh[d].append(d+1)
+    return (pi, nh)
+
+# Source-based forwarding (list of hops stored at the source)
+def dijkstraNDL(G, s):
+    # Solving L = A*L + I
+    n = G.order()
+    pi = RoutingMatrix.unit(G.type, n, row = s)
+    ph = list()
+    i = 0
+    while (i < n):
+        ph.append(list())
+        i += 1
+    ph[s].append(s+1)
+    T = range(n)
+    while(len(T) > 0):
+        q = argmax(G.type, T, pi)
+        if(q == -1):
+            break
+        T.remove(q)
+        for s in predecessors(G, T, q):
+            alt = G(s,q) * pi[q]
+            if (pi[s] < alt):
+                pi[s] = alt
+                ph[s] = list(ph[q])
+                ph[s].append(s+1)
     return (pi, ph)
 
 dijkstra = dijkstraR
+dijkstraND = dijkstraNDR
 
-def dijkstraND(G, s):
+# Endpoints-based forwarding (forwarding table with previous-hop consideration)
+def dijkstraPHD(G, s):
     # Solving R = R*A + I
     n = G.order()
     pi = RoutingMatrix.unit(G.type, n, row = s)

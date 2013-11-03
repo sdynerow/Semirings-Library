@@ -132,3 +132,26 @@ class Scoped(Semiring):
     def __repr__(self, other):
         pass
 
+class Tunnel(Semiring):
+    # (s,o) with s (resp. o) the weight in the support (resp. overlay) network.
+
+    def __add__(self, other):
+        (o1, s1) = self.elt
+        (o2, s2) = other.elt
+        return Tunnel( (o1+o2, s1+s2) )
+
+    def __mul__(self, other):
+        (o1, s1) = self.elt
+        (o2, s2) = other.elt
+        sMul = s1 * s2
+        if(sMul.isZero()):
+            return Tunnel( (o1.__class__.zero(), sMul) )
+        else:
+            return Tunnel( (o1 * o2, sMul) )
+
+    def __le__(self, other):
+        pass
+
+    def __repr__(self):
+        (o,s) = self.elt
+        return "(" + o.__repr__() + "," + s.__repr__() + ")"

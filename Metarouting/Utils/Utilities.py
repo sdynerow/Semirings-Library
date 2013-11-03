@@ -16,6 +16,9 @@
 
 from Metarouting.Algebra.Matrix import *
 
+def latex(matrix):
+    pass
+
 def nhStr(nh):
     result = "["
     n = len(nh)

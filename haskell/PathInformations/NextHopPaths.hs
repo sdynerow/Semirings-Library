@@ -11,13 +11,13 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Policy.NextHopPaths
+module PathInformations.NextHopPaths
 ( NextHopPaths(..)
 ) where
 
 import LaTeX
 
-import Policy.NextHop
+import PathInformations.NextHop
 import Algebra.Semiring
 import Algebra.Semimodule
 

@@ -11,7 +11,7 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Direct
+module Algebra.Constructs.Direct
 ( Direct(..)
 , direct
 ) where

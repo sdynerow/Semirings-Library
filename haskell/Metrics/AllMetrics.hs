@@ -11,28 +11,9 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
--- A definition of the AS-PATH policy of BGP
-
-module Policy.PathCount
-( PathCount(..)
-) where
+import Metrics.Distance
+import Metrics.Bandwidth
+import Metrics.Reliability
+import Metrics.DistanceNegative
 
 import Algebra.Semiring
-
-data PathCount = PC Int
-            deriving (Eq,Ord)
-
-instance Show (PathCount) where
-  show (PC a) = show a
-
-instance Semiring (PathCount) where
-  add (PC as) (PC bs) = PC (as + bs)
-  zero = PC 0
-
-  mul (PC as) (PC bs) = PC (as * bs)
-  unit = PC 1
-
-
-
-
-

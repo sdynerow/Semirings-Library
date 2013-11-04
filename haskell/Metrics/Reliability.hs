@@ -11,31 +11,22 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Policy.WidestPath
-( WidestPath(..)
+module Metrics.Reliability
+( Reliability(..)
 ) where
 
 import Algebra.Semiring
 
-import LaTeX
+data Reliability = Rel Float
+       deriving (Eq)
 
-data WidestPath = WP Int | Inf
-  deriving (Eq)
+instance Show Reliability where
+  show (Rel p) | (0.0 <= p && p <= 1.0) = show p
+              | otherwise = " ☢ "
 
-instance Show WidestPath where
-  show (WP x) = show x
-  show Inf = "∞"
+instance Semiring (Reliability) where
+  add (Rel a) (Rel b) = Rel (max a b)
+  zero = (Rel 0.0)
+  mul (Rel a) (Rel b) = Rel (a * b)
+  unit = (Rel 1.0)
 
-instance Semiring WidestPath where
-  add (WP a) (WP b) = WP (max a b)
-  add _ _ = Inf
-  zero = WP 0
-
-  mul (WP a) (WP b) = WP (min a b)
-  mul Inf x = x
-  mul x Inf = x
-  unit = Inf
-
-instance LaTeX WidestPath where
-  toLaTeX (WP x) = "\\textifsym{" ++ show x ++ "}"
-  toLaTeX  Inf   = "\\infty"

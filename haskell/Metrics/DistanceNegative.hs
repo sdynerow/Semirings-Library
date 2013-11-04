@@ -11,19 +11,31 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
--- A template for policy definition
-
-module Policy.Blank
-( Blank(..)
+module Metrics.DistanceNegative
+( ShortestPathNeg(..)
 ) where
+
+import LaTeX
 
 import Algebra.Semiring
 
-data Blank = B Int | Neutral
-       deriving(Eq, Show)
+data ShortestPathNeg = SPN Int | Inf
+  deriving (Eq)
 
-instance Semiring (Blank) where
-  add a b = a
-  addId = Neutral
-  mul a b = b
-  mulId = Neutral
+instance Show ShortestPathNeg where
+  show (SPN x) = show x
+  show Inf = "∞"
+
+instance LaTeX ShortestPathNeg where
+  toLaTeX (SPN x) = "\\mpzc{" ++ show x ++ "}"
+  toLaTeX Inf = "\\infty"
+
+instance Semiring (ShortestPathNeg) where
+  add Inf x = x
+  add x Inf = x
+  add (SPN x) (SPN y) = SPN (min x y)
+  zero = Inf
+
+  mul (SPN x) (SPN y) = SPN (x + y)
+  mul _ _ = Inf
+  unit = (SPN 0)

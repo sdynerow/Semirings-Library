@@ -11,31 +11,28 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Policy.ShortestPathNeg
-( ShortestPathNeg(..)
+module PathInformations.Existence
+( Existence(..)
 ) where
-
-import LaTeX
 
 import Algebra.Semiring
 
-data ShortestPathNeg = SPN Int | Inf
+import LaTeX
+
+data Existence = E Int
   deriving (Eq)
 
-instance Show ShortestPathNeg where
-  show (SPN x) = show x
-  show Inf = "∞"
+instance Show Existence where
+  show (E 0) = "X"
+  show (E 1) = "V"
 
-instance LaTeX ShortestPathNeg where
-  toLaTeX (SPN x) = "\\mpzc{" ++ show x ++ "}"
-  toLaTeX Inf = "\\infty"
+instance Semiring Existence where
+  add (E a) (E b) = E (max a b)
+  zero = (E 0)
 
-instance Semiring (ShortestPathNeg) where
-  add Inf x = x
-  add x Inf = x
-  add (SPN x) (SPN y) = SPN (min x y)
-  zero = Inf
+  mul (E a) (E b) = E (min a b)
+  unit = (E 1)
 
-  mul (SPN x) (SPN y) = SPN (x + y)
-  mul _ _ = Inf
-  unit = (SPN 0)
+instance LaTeX Existence where
+  toLaTeX (E 0) = "\\ko"
+  toLaTeX (E 1) = "\\ok"

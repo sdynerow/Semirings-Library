@@ -11,15 +11,31 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Policy.UsablePath
-import Policy.WidestPath
-import Policy.ShortestPath
-import Policy.ShortestPathNeg
-import Policy.MostReliablePath
-import Policy.Paths
-import Policy.PathCount
-import Policy.NextHop
+module Metrics.Bandwidth
+( Bandwidth(..)
+) where
 
-import Algebra
+import Algebra.Semiring
 
 import LaTeX
+
+data Bandwidth = B Int | Inf
+  deriving (Eq)
+
+instance Show Bandwidth where
+  show (B x) = show x
+  show Inf = "∞"
+
+instance Semiring Bandwidth where
+  add (B a) (B b) = B (max a b)
+  add _ _ = Inf
+  zero = B 0
+
+  mul (B a) (B b) = B (min a b)
+  mul Inf x = x
+  mul x Inf = x
+  unit = Inf
+
+instance LaTeX Bandwidth where
+  toLaTeX (B x) = "\\textifsym{" ++ show x ++ "}"
+  toLaTeX  Inf   = "\\infty"

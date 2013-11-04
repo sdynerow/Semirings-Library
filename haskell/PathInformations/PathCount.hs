@@ -11,21 +11,28 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Policy.MostReliablePath
-( MostReliablePath(..)
+-- A definition of the AS-PATH policy of BGP
+
+module PathInformations.PathCount
+( PathCount(..)
 ) where
 
 import Algebra.Semiring
 
-data MostReliablePath = MR Float
-       deriving (Eq)
+data PathCount = PC Int
+            deriving (Eq,Ord)
 
-instance Show MostReliablePath where
-  show (MR p) | (0.0 <= p && p <= 1.0) = show p
-              | otherwise = " ☢ "
+instance Show (PathCount) where
+  show (PC a) = show a
 
-instance Semiring (MostReliablePath) where
-  add (MR a) (MR b) = MR (max a b)
-  zero = (MR 0.0)
-  mul (MR a) (MR b) = MR (a * b)
-  unit = (MR 1.0)
+instance Semiring (PathCount) where
+  add (PC as) (PC bs) = PC (as + bs)
+  zero = PC 0
+
+  mul (PC as) (PC bs) = PC (as * bs)
+  unit = PC 1
+
+
+
+
+

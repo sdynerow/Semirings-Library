@@ -13,7 +13,7 @@
 
 -- A definition of the AS-PATH policy of BGP
 
-module Policy.Paths
+module PathInformations.Paths
 ( Paths(..)
 , Path(..)
 ) where

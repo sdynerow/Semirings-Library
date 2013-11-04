@@ -11,28 +11,19 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Policy.UsablePath
-( UsablePath(..)
+-- A template for policy definition
+
+module Metrics.Blank
+( Blank(..)
 ) where
 
 import Algebra.Semiring
 
-import LaTeX
+data Blank = B Int | Neutral
+       deriving(Eq, Show)
 
-data UsablePath = U Int
-  deriving (Eq)
-
-instance Show UsablePath where
-  show (U 0) = "X"
-  show (U 1) = "V"
-
-instance Semiring UsablePath where
-  add (U a) (U b) = U (max a b)
-  zero = (U 0)
-
-  mul (U a) (U b) = U (min a b)
-  unit = (U 1)
-
-instance LaTeX UsablePath where
-  toLaTeX (U 0) = "\\ko"
-  toLaTeX (U 1) = "\\ok"
+instance Semiring (Blank) where
+  add a b = a
+  addId = Neutral
+  mul a b = b
+  mulId = Neutral

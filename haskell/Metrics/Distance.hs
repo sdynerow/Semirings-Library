@@ -11,35 +11,35 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-module Policy.ShortestPath
-( ShortestPath(..)
+module Metrics.Distance
+( Distance(..)
 ) where
 
 import LaTeX
 
 import Algebra.Semiring
 
-data ShortestPath = SP Int | Inft
+data Distance = D Int | Inft
   deriving (Eq)
 
-instance Show ShortestPath where
-  show (SP x) = show x
+instance Show Distance where
+  show (D x) = show x
   show Inft = "∞"
 
-instance Semiring (ShortestPath) where
-  add (SP x) (SP y) = SP (min x y)
-  add  Inft  (SP b) = SP b
-  add (SP a)  Inft  = SP a
+instance Semiring (Distance) where
+  add (D x) (D y) = D (min x y)
+  add  Inft  (D b) = D b
+  add (D a)  Inft  = D a
   add  Inft   Inft  = Inft
   zero = Inft
 
-  mul (SP x) (SP y) = SP (x + y)
-  mul (SP _)  Inft  = Inft
-  mul  Inft  (SP _) = Inft
+  mul (D x) (D y) = D (x + y)
+  mul (D _)  Inft  = Inft
+  mul  Inft  (D _) = Inft
   mul  Inft   Inft  = Inft
-  unit = (SP 0)
+  unit = (D 0)
 
--- Because I want to put nice matrices from the SP policy in LaTeX files :)
-instance LaTeX (ShortestPath) where
-  toLaTeX (SP x) = "\\mpzc{" ++ show x ++ "}"
+-- Because I want to put nice matrices from the D policy in LaTeX files :)
+instance LaTeX (Distance) where
+  toLaTeX (D x) = "\\mpzc{" ++ show x ++ "}"
   toLaTeX  Inft  = "\\infty"

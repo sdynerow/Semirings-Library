@@ -18,37 +18,55 @@ module PathInformations.NextHopPaths
 import LaTeX
 
 import PathInformations.NextHop
-import Algebra.Semiring
-import Algebra.Semimodule
 
-data NextHopPaths = NHP [NextHop] | Agr NextHopPaths NextHopPaths
+import Algebra.Semiring
+
+data NextHopPaths = NHP Int Int [[NextHop]]
   deriving (Eq)
 
-instance Show NextHopPaths where
-  show (NHP l) = show l
-  show (Agr n1 n2) = show n1 ++ "|" ++ show n2
+compat :: NextHop -> NextHop -> Bool
+compat S _ = True
+compat _ S = True
+compat (A i q1) (A q2 j) = q1 == q2
 
-instance Semimodule NextHop NextHopPaths where
-  sadd p1 p2 = Agr p1 p2
-  lsmul n (NHP p) = NHP (n:p)
-  lsmul n (Agr p1 p2) = Agr (lsmul n p1) (lsmul n p2)
-  rsmul (NHP p) n = NHP (n:p)
-  rsmul (Agr p1 p2) n = Agr (rsmul p1 n) (rsmul p2 n)
-  
---  -- The self-loop is more interesting than any link. The end of the line is the least interesting one.
---  add p1 S = S
---  add S p2 = S
---  add X p2 = p2
---  add p1 X = p1
---  -- We arbitrarily pick the first operand
---  add p1 p2 = p1
---  -- The absence of a next hop is the least interesting situation
---  zero = X
---  -- The self-loop is a unit for concatenation and end of the line absorbs
---  mul S p2 = p2
---  mul X _ = X
---  mul _ X = X
---  -- Otherwise the next-hop is picked, p2 is the next-hop's next-hop :)
---  mul p1 p2 = p1
---  -- The self-loop is a unit for concatenation
---  unit = S
+consistent :: [NextHop] -> Bool
+consistent (a:[]) = True
+consistent (a1:a2:as) = (compat a1 a2) && (consistent (a2:as))
+
+reduce :: [NextHop] -> [NextHop]
+reduce (a:[]) = a:[]
+reduce as
+  | consistent as = filter (\x -> (x /= S)) as
+  | otherwise = []
+
+elimDoubles :: Eq a => [a] -> [a]
+elimDoubles [] = []
+elimDoubles (a:as) = a : (filter (\x -> a /= x) (elimDoubles as))
+
+elimEmpty :: Eq a => [[a]] -> [[a]]
+elimEmpty [[]] = [[]]
+elimEmpty  as  = filter (\x -> x /= []) as
+
+startsAt :: Int -> [NextHop] -> Bool
+startsAt _ [] = False
+startsAt _ (S:_) = True
+startsAt s ((A i _):_) = s == i
+
+endsAt :: Int -> [NextHop] -> Bool
+endsAt _ [] = False
+endsAt _ (S:[]) = True
+endsAt s ((A _ j):[]) = s == j
+endsAt s (_:as) = endsAt s as
+
+instance Show NextHopPaths where
+  show (NHP 0 0 (l:[])) = show l
+  show (NHP 0 0 (p : ps)) = show p ++ "|" ++ show (NHP 0 0 ps)
+  show (NHP i j (l:[])) = show i ++ ">" ++ show j ++ " " ++ show l
+  show (NHP i j (p : ps)) = show i ++ ">" ++ show j ++ " " ++ show p ++ "|" ++ show (NHP 0 0 ps)
+
+instance Semiring NextHopPaths where
+  add (NHP s1 d1 p1) (NHP s2 d2 p2) = NHP s2 d2 (elimEmpty (elimDoubles (p1 ++ p2)))
+  zero = NHP 0 0 [[]]
+
+  mul (NHP s1 _ p1) (NHP _ d2 p2) = NHP s1 d2 [reduce (a ++ b) | a <- p1, b <- p2, startsAt s1 a, endsAt d2 b]
+  unit = NHP 0 0 [[S]]

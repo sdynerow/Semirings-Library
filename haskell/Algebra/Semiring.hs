@@ -29,6 +29,12 @@ class (Eq s) => Semiring s where
   nor :: s -> s -> Bool
   nor a b = (add a b == a)
 
+  snor :: s -> s -> Bool
+  snor a b = (nor a b) && (a /= b)
+
+  inc :: s -> s -> Bool
+  inc a b = not (nor a b) && not (nor b a)
+
   kronecker :: (Eq t) => t -> t -> s
   kronecker i j | (i==j) = unit
                 | (i/=j) = zero

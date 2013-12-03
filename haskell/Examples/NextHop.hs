@@ -8,7 +8,7 @@ import LaTeX
 import Algebra.Matrix
 import Algebra.Semiring
 
-import Policy.NextHop
+import PathInformations.NextHop
 
 nhExamples :: Int -> Matrix NextHop
 nhExamples 0 = M (toArray 5 [ zero, A 1 2, zero, zero, zero

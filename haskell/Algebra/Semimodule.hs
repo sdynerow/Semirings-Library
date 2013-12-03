@@ -21,3 +21,4 @@ class Semiring s => Semimodule s t where
   sadd  :: t -> t -> t
   lsmul :: s -> t -> t
   rsmul :: t -> s -> t
+  szero :: t

@@ -11,8 +11,9 @@
 -- See the License for the specific language governing permissions and
 -- imitations under the License.
 
-import Examples.WidestPath
-import Examples.ShortestPath
+import Examples.Distance
+import Examples.Bandwidth
+
 import Examples.NextHop
 import Examples.NextHopPaths
 
@@ -21,7 +22,5 @@ import Algebra.Semiring
 import Algebra.Constructs.Lexicographic
 import Algebra.Optimum
 
-import LaTeX
-
 -- Example graph from Routing in Equilibrium with Next Hops
-rieNH = lexicographic (lexicographic (wpExamples 1) (spExamples 4)) (nhExamples 2)
+rieNH = lexicographic (lexicographic (bExamples 1) (dExamples 4)) (nhExamples 0)

@@ -55,10 +55,10 @@ pointwise (M as) (M bs) op | (arrayOrder as) == (arrayOrder bs) =
 pointwise _ _ _ = error "Incompatible matrices"
 
 instance (Semiring s, Show s) => Show (Matrix s) where
-  show (M as) = intShow [[ as!(i,j) | j <- [1..n]] | i <- [1..n]]
+  show (M as) = "[" ++ intShow [[ as!(i,j) | j <- [1..n]] | i <- [1..n]] ++ "]"
     where n = arrayOrder as
           intShow (a:as) |  as == [] = intShowVector a
-	  	  	 | otherwise = intShowVector a ++ "\n" ++ intShow as
+	  	  	 | otherwise = intShowVector a ++ " " ++ intShow as
 	    where intShowVector (a:[]) = show a
 	          intShowVector (a:as) = show a ++ " " ++ intShowVector as
   show MatAddId = "forall i,j => 0"

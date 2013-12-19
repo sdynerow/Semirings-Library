@@ -36,6 +36,10 @@ instance Semiring Bandwidth where
   mul x Inf = x
   unit = Inf
 
+  lub Inf b = b
+  lub a Inf = a
+  lub (B a) (B b) = B (min a b)
+
 instance LaTeX Bandwidth where
   toLaTeX (B x) = "\\textifsym{" ++ show x ++ "}"
   toLaTeX  Inf   = "\\infty"

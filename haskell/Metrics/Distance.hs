@@ -39,6 +39,10 @@ instance Semiring (Distance) where
   mul  Inft   Inft  = Inft
   unit = (D 0)
 
+  lub _ Inft = Inft
+  lub Inft _ = Inft
+  lub (D x) (D y) = D (max x y)
+
 -- Because I want to put nice matrices from the D policy in LaTeX files :)
 instance LaTeX (Distance) where
   toLaTeX (D x) = "\\mpzc{" ++ show x ++ "}"

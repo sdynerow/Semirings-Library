@@ -32,6 +32,7 @@ instance (Semiring s, Semiring t) => Semiring (Direct s t) where
   unit = Dir (unit, unit)
   add (Dir (s1, t1)) (Dir (s2, t2)) = Dir (add s1 s2, add t1 t2)
   mul (Dir (s1, t1)) (Dir (s2, t2)) = Dir (mul s1 s2, mul t1 t2)
+  lub (Dir (s1, t1)) (Dir (s2, t2)) = Dir (lub s1 s2, lub t1 t2)
 
 direct :: (Semiring s, Semiring t) => Matrix s -> Matrix t -> Matrix (Direct s t)
 direct as bs

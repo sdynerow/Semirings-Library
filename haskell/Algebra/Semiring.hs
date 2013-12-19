@@ -35,6 +35,8 @@ class (Eq s) => Semiring s where
   inc :: s -> s -> Bool
   inc a b = not (nor a b) && not (nor b a)
 
+  lub :: s -> s -> s
+
   kronecker :: (Eq t) => t -> t -> s
   kronecker i j | (i==j) = unit
                 | (i/=j) = zero

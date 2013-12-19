@@ -17,12 +17,16 @@ instance Semiring (BoundedDistance) where
   zero = mu
 
   mul (BD x) (BD y)
-    | (x + y < 15) = BD (x + y)
+    | (x + y < intMu) = BD (x + y)
     |   otherwise  = mu
   unit = (BD 0)
+
+  lub (BD x) (BD y)
+    | (max x y < intMu) = BD (max x y)
+    | otherwise = mu
 
 mu :: BoundedDistance
 mu = (BD intMu)
 
 intMu :: Int
-intMu = 7
+intMu = 4

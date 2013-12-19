@@ -109,6 +109,10 @@ instance Semiring s => Semiring (Matrix s) where
   nor (M as) (M bs) | ((arrayOrder as) == (arrayOrder bs)) =
     foldl (&&) True (zipWith (nor) (elems as) (elems bs))
 
+  lub (M as) (M bs)
+     | bounds as == bounds bs = M (toArray ((snd.snd.bounds) as) (zipWith (lub) (elems as) (elems bs)))
+     | otherwise = error "Incompatible matrices"
+
   power as k = squareMultiply mul (matrixUnit (order as)) as k
 
 computeOneElt :: (Semiring s) => Matrix s -> Matrix s -> (Int,Int) -> s

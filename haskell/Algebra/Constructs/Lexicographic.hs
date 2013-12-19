@@ -40,6 +40,7 @@ instance (Semiring s, Semiring t) => Semiring (Lexicographic s t) where
       | otherwise    = Lex (addS, zero)
           where addS = add s1 s2
   mul (Lex (s1, t1)) (Lex (s2, t2)) = Lex (mul s1 s2, mul t1 t2)
+  lub (Lex (s1, t1)) (Lex (s2, t2)) = Lex (lub s1 s2, lub t1 t2)
 
 lexicographic :: (Semiring s, Semiring t) => Matrix s -> Matrix t -> Matrix (Lexicographic s t)
 lexicographic as bs | (order as) == (order bs) = pointwise as bs zipL

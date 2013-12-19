@@ -33,18 +33,20 @@ print(
 "import Algebra.Semiring\n" +
 "import Metrics.Distance\n" +
 "import Metrics.Bandwidth\n" +
+"import Metrics.BoundedDistance\n" +
 "import Algebra.Constructs.Direct\n" +
 "import Algebra.Constructs.Lexicographic\n" +
 "import Data.Array"
 )
 
 print(
-"inputDist = [D 0, D 1, D 2, D 3, D 4, Inft]\n" +
-"inputBand = [B 0, B 1, B 2, B 3, B 4, Inf]\n" +
-"inputElts = inputDist\n" +
-"inputDirs = [Dir (s,t) | s <- inputElts, t <- inputElts]\n" +
+"inputDist = [D 0, D 1, D 2, Inft]\n" +
+"inputBand = [B 0, B 1, B 2, Inf]\n" +
+"inputBDist = [BD 0, BD 1, BD 2, BD 3, BD 4, BD 5]\n" +
 "inputLexs = [Lex (s,t) | s <- inputBand, t <- inputDist]\n" +
-"input = inputLexs"
+"inputElts = inputBDist\n" +
+"inputDirs = [Dir (s,t) | s <- inputElts, t <- inputElts]\n" +
+"input = inputDirs"
 )
 
 print(
@@ -58,13 +60,13 @@ print(
 )
 
 print(
-#"allM :: [Matrix Distance]\n" +
-"allM = [ M (toArray 2 (a1:a2:a3:a4:[])) | a1 <- input, a2 <- input, a3 <- input, a4 <- input ]\n"
+#"all9 :: [Matrix Distance]\n" +
+"all9 = [ M (toArray 3 (a1:a2:a3:a4:a5:a6:a7:a8:a9:[])) | a1 <- input, a2 <- input, a3 <- input, a4 <- input, a5 <- input, a6 <- input, a7 <- input, a8 <- input , a9 <- input ]\n"
 )
 
 print(
 #"allU :: [Matrix Distance]\n" +
-"allU = [ M (toArray 2 (a1:a2:a3:a4:[])) | a1 <- [zero], a2 <- input, a3 <- input, a4 <- [zero] ]\n"
+"all4 = [ M (toArray 2 (a1:a2:a3:a4:[])) | a1 <- input, a2 <- input, a3 <- input, a4 <- input ]\n"
 )
 
 print(
@@ -75,55 +77,24 @@ print(
 )
 
 print(
-    "fst4 (a,_,_,_) = a"
+    "prop a b x y = not ((x == add (mul x a) b) && (y == add (mul y a) b) && snor (mul b a) zero && zero == lub b a) || x == y"
+#    "prop a b x y = mul (lub a b) x == lub (mul a x) (mul b x)"
 )
 
 print(
-"prop a b x y = " +
-"(zero == lub a b) && " +          # a )( b
-"(x == add (mul x a) b) && " +     # x = xa + b
-"(y == add (mul y a) b) && " +     # y = ya + b
-"(snor x y) && " +                 # x < y
-"(snor x b) && " +                 # x < b
-"(nor y b) && " +                  # y < b or y = b
-"(snor x (mul x a)) && " +         # x < xa
-"(snor y (mul y a)) && " +         # y < ya
-"(inc y (mul x a)) && " +          # y || xa
-#"(snor (mul x a) (mul y a)) && " + # xa < ya
-"(inc (mul x a) b) && " +          # xa || b
-"(inc (mul y a) b) && " +          # ya || b
-"True\n"
+    "testOR = foldl (||) False [ prop a b x y | a <- as, b <- bs, x <- xs, y <- ys]\n"
 )
 
 print(
-    "disjoint (M as) = as!(1,1) /= unit && as!(2,2) /= unit"
+    "testAND = foldl (&&) True [ prop a b x y | a <- as, b <- bs, x <- xs, y <- ys]\n"
 )
 
 print(
-    "lub a b = if (nor a b) then b else a\n" +
-#    "lub :: Matrix Distance -> Matrix Distance -> Matrix Distance\n" +
-    "lubM (M as) (M bs) = M (toArray 2 (zipWith (\\x -> \\y -> if (nor x y) then y else x) (elems as) (elems bs)))"
+    "filterProperty = filter (\\(a,b,x,y) -> not (prop a b x y)) [ (a,b,x,y) | a <- as, b <- bs, x <- xs, y <- ys]\n"
 )
 
 print(
-#    "prop2 a b x y = not ((zero == (lub a b)) && (x == add (mul x a) b) && (nor x a) && (nor x (mul x a))) || nor a (mul x a)"
-    "prop2 a b x y = not ((snor a zero) && (snor b zero) && (x == add (mul x a) b) && (y == add (mul y a) b) && (zero == lub a b)) || zero == lub (mul x a) a && zero == lub (mul x a) b"
-)
-
-print(
-    "testOR = foldl (||) False [ prop2 a b x y | a <- as, b <- bs, x <- xs, y <- ys]\n"
-)
-
-print(
-    "testAND = foldl (&&) True [ prop2 a b x y | a <- as, b <- bs, x <- xs, y <- ys]\n"
-)
-
-print(
-    "filterProperty = filter (\\(a,b,x,y) -> not (prop2 a b x y)) [ (a,b,x,y) | a <- as, b <- bs, x <- xs, y <- ys]\n"
-)
-
-print(
-    "a = M (toArray 2 [D 1, D 1, D 1, D 0])\n" +
+    "a = M (toArray 2 [zero, D 0, D 1, zero])\n" +
     "b = matrixUnit 2 :: Matrix Distance\n" +
     "x = M (toArray 2 [D 0, D 0, D 1, D 0])\n" +
     "y = M (toArray 2 [D 0, D 1, D 1, D 0])"

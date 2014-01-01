@@ -14,13 +14,13 @@ print(
 )
 
 print(
-"inputDist = [D 0, D 1, D 2, D 3, Inft]\n" +
-"inputBand = [B 0, B 1, B 2, B 3, Inf]\n" +
+"inputDist = [D 0, D 1, D 2, Inft]\n" +
+"inputBand = [B 0, B 1, B 2, Inf]\n" +
 "inputBDist = [BD 0, BD 1, BD 2, BD 3, BD 4, BD 5]\n" +
 "inputLexs = [Lex (s,t) | s <- inputBand, t <- inputDist]\n" +
 "inputElts = inputLexs\n" +
 "inputDirs = [Dir (s,t) | s <- inputElts, t <- inputElts]\n" +
-"input = inputLexs"
+"input = inputDirs"
 )
 
 print(
@@ -37,35 +37,11 @@ print(
 )
 
 print(
-#    "prop a b x y = not ((x == add (mul x a) b) && (y == add (mul y a) b) && snor (mul b a) zero && zero == lub b a) || x == y"
-    "prop a b x y = mul (lub a b) x == lub (mul a x) (mul b x)"
+#    "prop a b x y = not ((x == add (mul x a) b) && (y == add (mul y a) b) && not (nor (lub b a) (mul b a))) || x == y"
+#    "prop a b x y = not (snor (mul b a) (lub b a)) || mul (lub b x) a == lub (mul b a) (mul x a)"
+    "prop a b x y = lub (mul x a) (add (mul y a) b) == add (lub (mul x a) (mul y a)) (lub (mul x a) b)"
 )
 
 print(
-    "testOR = foldl (||) False [ prop a b x y | a <- as, b <- bs, x <- xs, y <- ys]\n"
+    "filterProperty = filter (\\(a,b,x,y) -> not (prop a b x y)) [ (a,b,x,y) | a <- as, b <- bs, x <- xs, y <- ys ]\n"
 )
-
-print(
-    "testAND = foldl (&&) True [ prop a b x y | a <- as, b <- bs, x <- xs, y <- ys]\n"
-)
-
-print(
-    "filterProperty = filter (\\(a,b,x,y) -> not (prop a b x y)) [ (a,b,x,x) | a <- as, b <- bs, x <- xs]\n"
-)
-
-print(
-    "a = M (toArray 2 [zero, D 0, D 1, zero])\n" +
-    "b = matrixUnit 2 :: Matrix Distance\n" +
-    "x = M (toArray 2 [D 0, D 0, D 1, D 0])\n" +
-    "y = M (toArray 2 [D 0, D 1, D 1, D 0])\n" +
-    "ex = Lex (B 100, D 2)\n" +
-    "eb = Lex (B 10, D 1)\n" +
-    "ea = Lex (B 10, D 1)"
-)
-
-
-
-
-
-
-

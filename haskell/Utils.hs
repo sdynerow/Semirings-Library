@@ -12,7 +12,8 @@
 -- imitations under the License.
 
 module Utils
-( log2
+( (==>)
+, log2
 , toArray
 , arrayOrder
 , squareMultiply
@@ -20,6 +21,10 @@ module Utils
 
 import Data.Bits
 import Data.Array
+
+(==>) :: Bool -> Bool -> Bool
+True ==> False = False
+_ ==> _ = True
 
 log2 :: Int -> Int
 log2 1 = 0

@@ -39,7 +39,7 @@ print(
 print(
 #    "prop a b x y = not ((x == add (mul x a) b) && (y == add (mul y a) b) && not (nor (lub b a) (mul b a))) || x == y"
 #    "prop a b x y = not (snor (mul b a) (lub b a)) || mul (lub b x) a == lub (mul b a) (mul x a)"
-    "prop a b x y = lub (mul x a) (add (mul y a) b) == add (lub (mul x a) (mul y a)) (lub (mul x a) b)"
+#    "prop a b x y = lub (mul x a) (add (mul y a) b) == add (lub (mul x a) (mul y a)) (lub (mul x a) b)"
 )
 
 print(

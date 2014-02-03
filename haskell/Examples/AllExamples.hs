@@ -14,13 +14,15 @@
 import Examples.Distance
 import Examples.Bandwidth
 
-import Examples.NextHop
-import Examples.NextHopPaths
+--import Examples.NextHop
+--import Examples.NextHopPaths
 
 import Algebra.Matrix
 import Algebra.Semiring
 import Algebra.Constructs.Lexicographic
 import Algebra.Optimum
 
+import LaTeX
+
 -- Example graph from Routing in Equilibrium with Next Hops
-rieNH = lexicographic (lexicographic (bExamples 1) (dExamples 4)) (nhExamples 0)
+rieNH = lexicographic (bExamples 1) (dExamples 4)

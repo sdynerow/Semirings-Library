@@ -12,18 +12,12 @@
 -- imitations under the License.
 
 module Algebra.Optimum
-( llo1
-, rlo1
-, llo2
-, rlo2
+( llo
+, rlo
 , lloStd
 , rloStd
-, lloMem
-, rloMem
 , lloStdDepth
 , rloStdDepth
-, lloMemDepth
-, rloMemDepth
 ) where
 
 import Algebra.Semiring
@@ -44,54 +38,29 @@ norChar a b | (nor b a) = Gt
 norChar a b | otherwise = Pa
 
 -- Iterated solving of X = AX + B
-llo1 :: (Semiring s) => s -> s -> s -> s
-llo1 a b x = if (x == updated) then x else llo1 a b updated
+llo :: (Semiring s) => s -> s -> s -> s
+llo a b x = if (x == updated) then x else llo a b updated
   where updated = add (mul a x) b
 -- Iterated solving of X = XA + B
-rlo1 :: (Semiring s) => s -> s -> s -> s
-rlo1 a b x = if (x == updated) then x else rlo1 a b updated
+rlo :: (Semiring s) => s -> s -> s -> s
+rlo a b x = if (x == updated) then x else rlo a b updated
   where updated = add (mul x a) b
 
-lloDepth1 :: (Semiring s) => s -> s -> s -> [LatticeStep]
-lloDepth1 a b x = if (x == updated) then [] else (norChar updated x) : lloDepth1 a b updated
+lloDepth :: (Semiring s) => s -> s -> s -> [LatticeStep]
+lloDepth a b x = if (x == updated) then [] else (norChar updated x) : lloDepth a b updated
   where updated = add (mul a x) b
-rloDepth1 :: (Semiring s) => s -> s -> s -> [LatticeStep]
-rloDepth1 a b x = if (x == updated) then [] else (norChar updated x) : rloDepth1 a b updated
+rloDepth :: (Semiring s) => s -> s -> s -> [LatticeStep]
+rloDepth a b x = if (x == updated) then [] else (norChar updated x) : rloDepth a b updated
   where updated = add (mul x a) b
-
-llo2 :: (Semiring s) => s -> s -> s
-llo2 a x = if (x == updated) then x else llo2 a updated
-  where updated = add (mul a x) x
-rlo2 :: (Semiring s) => s -> s -> s
-rlo2 a x =  if (x == updated) then x else rlo2 a updated
-  where updated = add (mul x a) x
-
-lloDepth2 :: (Semiring s) => s -> s -> [LatticeStep]
-lloDepth2 a x = if (x == updated) then [] else (norChar updated x) : lloDepth2 a updated
-  where updated = add (mul a x) x
-rloDepth2 :: (Semiring s) => s -> s -> [LatticeStep]
-rloDepth2 a x = if (x == updated) then [] else (norChar updated x) : rloDepth2 a updated
-  where updated = add (mul x a) x
 
 lloStd :: (Semiring s) => s -> s
-lloStd a = llo1 a unit unit
+lloStd a = llo a unit unit
 
 rloStd :: (Semiring s) => s -> s
-rloStd a = rlo1 a unit unit
-
-lloMem :: (Semiring s) => s -> s
-lloMem a = llo2 a unit
-
-rloMem :: (Semiring s) => s -> s
-rloMem a = rlo2 a unit
+rloStd a = rlo a unit unit
 
 lloStdDepth :: (Semiring s) => s -> [LatticeStep]
-lloStdDepth a = lloDepth1 a unit unit
+lloStdDepth a = lloDepth a unit unit
 rloStdDepth :: (Semiring s) => s -> [LatticeStep]
-rloStdDepth a = rloDepth1 a unit unit
-
-lloMemDepth :: (Semiring s) => s -> [LatticeStep]
-lloMemDepth a = lloDepth2 a unit
-rloMemDepth :: (Semiring s) => s -> [LatticeStep]
-rloMemDepth a = rloDepth2 a unit
+rloStdDepth a = rloDepth a unit unit
 

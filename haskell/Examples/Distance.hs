@@ -111,4 +111,16 @@ dExamples 16 = M (toArray 4 [ zero, zero, zero, zero
 	                     , D 2, zero, zero, D 1
 	                     , D 2, D 1, zero, zero])
 
+dExamples 17 = M (toArray 5 [ zero, D 1, D 2, zero, D 4
+	                    , zero, zero, D 1, D 3, zero
+	                    , zero, zero, zero, D 1, D 2
+	                    , zero, zero, zero, zero, D 1
+	                    , zero, zero, zero, zero, zero])
+
+dExamples 18 = M (toArray 5 [ unit, zero, zero, zero, D 4
+	                    , zero, unit, zero, zero, zero
+	                    , zero, zero, unit, zero, zero
+	                    , zero, zero, zero, unit, zero
+	                    , zero, zero, zero, zero, unit])
+
 dExamples _ = error "Undefined example of Distance"

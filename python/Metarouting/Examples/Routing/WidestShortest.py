@@ -19,9 +19,9 @@ from Metarouting.Algebra.RoutingMatrix import *
 from Metarouting.Policy.Routing.ShortestR import *
 from Metarouting.Policy.Routing.WidestShortest import *
 
-from Metarouting.Algorithms.APSP import *
-from Metarouting.Algorithms.Bellman import *
-from Metarouting.Algorithms.Dijkstra import *
+#from Metarouting.Algorithms.APSP import *
+#from Metarouting.Algorithms.Bellman import *
+#from Metarouting.Algorithms.Dijkstra import *
 
 I = ShortestR.zeroElt
 m = RoutingMatrix(5, 5, [ (0, I), (5, 1), (0, I), (0, I), (0, I)
@@ -30,20 +30,16 @@ m = RoutingMatrix(5, 5, [ (0, I), (5, 1), (0, I), (0, I), (0, I)
                         , (5, 1), (0, I), (0, I), (0, I), (10, 1)
                         , (10, 5), (0, I), (5, 1), (0, I), (0, I)], cast=WidestShortest)
 
-print "Input matrix:\n" + str(m) + "\n"
-
+print("Input matrix:\n" + str(m) + "\n")
 
 llo = m.leftLocalOptimum2()
 rlo = m.rightLocalOptimum()
 
-print str(m.rightLocalOptimum()) + "\n"
-print str(m.rightLocalOptimum2())
+print(str(m.rightLocalOptimum()) + "\n")
+print(str(m.rightLocalOptimum2()))
 
-#print "LLO:\n" + str(llo) + "\n"
-#print "RLO:\n" + str(rlo) + "\n"
-
-solveAPSP(dijkstraR, "Dijkstra R ( D)", m)
-print
-solveAPSP(dijkstraNDR, "Dijkstra R (ND)", m)
-print
-solveAPSP(dijkstraNDL, "Dijkstra L (ND)", m)
+#solveAPSP(dijkstraR, "Dijkstra R ( D)", m)
+#print
+#solveAPSP(dijkstraNDR, "Dijkstra R (ND)", m)
+#print
+#solveAPSP(dijkstraNDL, "Dijkstra L (ND)", m)

@@ -37,6 +37,6 @@ class ShortestR(Semiring):
 
     def __repr__(self):
         if(self.elt == ShortestR.zeroElt):
-            return "I"
+            return "T"
         else:
             return self.elt.__repr__()

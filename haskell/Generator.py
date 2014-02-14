@@ -20,7 +20,7 @@ print(
 "inputLexs = [Lex (s,t) | s <- inputBand, t <- inputDist]\n" +
 "inputElts = inputLexs\n" +
 "inputDirs = [Dir (s,t) | s <- inputElts, t <- inputElts]\n" +
-"input = inputDirs"
+"input = inputLexs"
 )
 
 print(
@@ -29,7 +29,7 @@ print(
 )
 
 print(
-"(as, bs, xs, ys) = (input, input, input, input)\n" +
+"(as, bs, xs, ys) = (all4, all4, all4, all4)\n" +
 "cart = [ (a,b,x,y) | a <- as, b <- bs, x <- xs, y <- ys ]"
 )
 
@@ -42,9 +42,9 @@ print(
 )
 
 print(
-#    "prop (a,b,x,y) = ((fixpoint x a b) && (fixpoint y a b)) ==> (x == y)"
+    "prop (a,b,x,y) = ((fixpoint x a b) && (fixpoint y a b) && (x /= y)) ==> (fixpoint (add x y) a b)"
 #    "prop (a,b,x,y) = latDistr x y a"
-    "prop (a,b,x,y) = (independ b a) ==> (lubDistr x y a)"
+#    "prop (a,b,x,y) = (independ b a) ==> (lubDistr x y a)"
 #    "prop (a,b,x,y) = lub (mul x a) (add (mul y a) b) == add (lub (mul x a) (mul y a)) (lub (mul x a) b)"
 )
 

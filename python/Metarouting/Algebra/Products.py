@@ -64,18 +64,19 @@ class Lexicographic(Semiring):
         return "(" + s.__repr__() + "," + t.__repr__() + ")"
 
 class LeftLexicographic(Lexicographic):
-    def __add__(self, other):
+    @mixedmethod
+    def __add__(self, cls, other):
         (s1, t1) = self.elt
         (s2, t2) = other.elt
         sSum = s1 + s2
         if (s1 == sSum and sSum == s2):
-            return LeftLexicographic( (sSum, t1 + t2) )
+            return cls( (sSum, t1 + t2) )
         elif (s1 == sSum and sSum != s2):
-            return LeftLexicographic( (s1, t1) )
+            return cls( (s1, t1) )
         elif (s1 != sSum and sSum == s2):
-            return LeftLexicographic( (s2, t2))
+            return cls( (s2, t2))
         else: #(s1 != sSum and sSum != s2)
-            return LeftLexicographic( (sSum, t1.__class__.zero()) )
+            return cls( (sSum, t1.__class__.zero()) )
 
 class RightLexicographic(Lexicographic):
     def __add__(self, other):

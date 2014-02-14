@@ -31,6 +31,6 @@ class Bottleneck(Semiring):
 
     def __repr__(self):
         if(self.elt == Bottleneck.unitElt):
-            return "I"
+            return "M"
         else:
             return self.elt.__repr__()
